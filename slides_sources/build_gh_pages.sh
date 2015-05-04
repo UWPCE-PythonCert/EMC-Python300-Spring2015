@@ -7,7 +7,7 @@
 make html
 
 # copy to other repo (on the gh-pages branch)
-cp -R build/html/ ../../EMC-Python300-Spring2015.gh-pages
+cp -R build/html/* ../../EMC-Python300-Spring2015.gh-pages
 
 
 cd ../../EMC-Python300-Spring2015.gh-pages
