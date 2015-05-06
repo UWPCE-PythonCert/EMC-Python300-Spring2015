@@ -14,14 +14,11 @@ Why Build a Package?
 
 .. rst-class:: left
 
-  There are a bunch of nifty tools that help you build, install and
-  distribute packages.
+  There's a bunch of tools that help you build, install and distribute packages.
 
-  Using a well structured, standard layout for your package makes it
-  easy to use those tools.
+  Using a standard layout for your package makes it easy to use those tools.
 
-  Even if you never want to give anyone else your code, a well
-  structured package eases development.
+  Even if you never want to distribute your code, the standard layout eases development.
 
 What is a Package?
 --------------------
@@ -47,30 +44,85 @@ The ``distutils``::
 
 Getting klunky, hard to extend, maybe destined for deprication...
 
-But it gets the job done -- and it does it well for the simple cases.
+``setuptools``: extra features, wraps distutils, comes with "package manager" called ``easy_install``
 
-``setuptools``: for extra features
-
-``pip``: for installing packages
+``pip``: for installing packages, a replacement for ``easy_install`` 
 
 ``wheel``: for binary distributions
 
-Where do I go to figure this out?
------------------------------------
+`This packaging rant <http://lucumr.pocoo.org/2012/6/22/hate-hate-hate-everywhere/>`_ gives a lot of good background on the different Python packaging tools and evolution
 
-This is a really good guide:
+setuptools
+-----------
 
-Python Packaging User Guide:
+``setuptools`` is an extension to ``distutils`` that provides a number of extensions::
 
-https://packaging.python.org/en/latest/
+    from setuptools import setup
 
-**Follow it!**
+superset of the ``distutils setup``
 
-And a sample project here:
+This buys you a bunch of additional functionality:
 
-https://github.com/pypa/sampleproject
+  * auto-finding packages
+  * better script installation
+  * resource (non-code files) management
+  * **develop mode**
+  * a LOT more
 
-(this has all the complexity you might need...)
+http://pythonhosted.org//setuptools/
+
+PyPi
+-----
+
+The Python package index:
+
+https://pypi.python.org/pypi
+
+You've all used this -- ``pip install`` searches it.
+
+To upload your package to PyPi::
+
+  python setup.py register
+
+  python setup.py sdist bdist_wheel upload
+
+
+http://docs.python.org/2/distutils/packageindex.html
+
+
+wheels
+-------
+
+Wheels are a new binary format for packages.
+
+http://wheel.readthedocs.org/en/latest/
+
+Pretty simple, essentially an zip archive of all the stuff that gets put
+in
+
+``site-packages``
+
+Can be just pure python or binary with compiled extensions
+
+Compatible with virtualenv.
+
+.. nextslide::
+
+Building a wheel::
+
+  python setup.py bdist_wheel
+
+Create a set of wheels (a wheelhouse)::
+
+	# Build a directory of wheels for pyramid and all its dependencies
+	pip wheel --wheel-dir=/tmp/wheelhouse pyramid
+
+	# Install from cached wheels
+	pip install --use-wheel --no-index --find-links=/tmp/wheelhouse pyramid
+
+``pip install packagename`` will find wheels for Windows and OS-X.
+
+``pip install --no-use-wheel`` avoids that.
 
 
 Basic Package Structure:
@@ -187,26 +239,27 @@ simple to read and write.
 Note that an option spelled ``--foo-bar`` on the command-line is spelled f``foo_bar`` in configuration files.
 
 
-Running ``setup.py``
----------------------
+Where do I go to figure this out?
+-----------------------------------
 
-With a ``setup.py`` script defined, the distutils can do a lot:
+This is a really good guide:
 
-* builds a source distribution (defaults to tar file)::
+Python Packaging User Guide:
 
-    python setup.py sdist
-    python setup.py sdist --format=zip
+https://packaging.python.org/en/latest/
 
-* builds binary distributions::
+**Follow it!**
 
-    python setup.py bdist_rpm
-    python setup.py bdist_wininst
+And a sample project here:
 
-(other, more obscure ones, too....)
+https://github.com/pypa/sampleproject
 
-But you probably want to use wheel for binary disributions now.
+(this has all the complexity you might need...)
 
-.. nextslide::
+Running ``setup.py`` ( build, install, develop )
+---------------------------------------------------
+
+With a ``setup.py`` script defined you can do a lot: 
 
 * build from source::
 
@@ -216,77 +269,13 @@ But you probably want to use wheel for binary disributions now.
 
     python setup.py install
 
-setuptools
------------
+* and develop:: 
 
-``setuptools`` is an extension to ``distutils`` that provides a number of extensions::
+    python setup.py develop
+    # uninstall like this, or you might run into a gotcha 
+    python setup.py develop --uninstall
 
-    from setuptools import setup
-
-superset of the ``distutils setup``
-
-This buys you a bunch of additional functionality:
-
-  * auto-finding packages
-  * better script installation
-  * resource (non-code files) management
-  * **develop mode**
-  * a LOT more
-
-http://pythonhosted.org//setuptools/
-
-wheels
--------
-
-Wheels are a new binary format for packages.
-
-http://wheel.readthedocs.org/en/latest/
-
-Pretty simple, essentially an zip archive of all the stuff that gets put
-in
-
-``site-packages``
-
-Can be just pure python or binary with compiled extensions
-
-Compatible with virtualenv.
-
-.. nextslide::
-
-Building a wheel::
-
-  python setup.py bdist_wheel
-
-Create a set of wheels (a wheelhouse)::
-
-	# Build a directory of wheels for pyramid and all its dependencies
-	pip wheel --wheel-dir=/tmp/wheelhouse pyramid
-
-	# Install from cached wheels
-	pip install --use-wheel --no-index --find-links=/tmp/wheelhouse pyramid
-
-``pip install packagename`` will find wheels for Windows and OS-X.
-
-``pip install --no-use-wheel`` avoids that.
-
-PyPi
------
-
-The Python package index:
-
-https://pypi.python.org/pypi
-
-You've all used this -- ``pip install`` searches it.
-
-To upload your package to PyPi::
-
-  python setup.py register
-
-  python setup.py sdist bdist_wheel upload
-
-
-http://docs.python.org/2/distutils/packageindex.html
-
+What did each of these steps really do? How can we inspect the outcomes?
 
 Under Development
 ------------------
@@ -305,8 +294,27 @@ Good idea to use it for anything more than a single file project.
 
 (requires ``setuptools``)
 
-Getting Started
-----------------
+Running ``setup.py`` ( source and binary distros )
+-----------------------------------------------------
+
+With a ``setup.py`` script you can also create your distribution packages: 
+
+* builds a source distribution (defaults to tar file)::
+
+    python setup.py sdist
+    python setup.py sdist --format=zip
+
+* builds binary distributions::
+
+    python setup.py bdist_rpm
+    python setup.py bdist_wininst
+
+(other, more obscure ones, too....)
+
+But you probably want to use wheel for binary disributions now.
+
+Getting Started Hints
+------------------------
 
 For anything but a single-file script (and maybe even then):
 
@@ -331,9 +339,6 @@ LAB
   - ``setup.py``
 
   - ``python setup.py develop``
-
-  - ``at least one working test``
-
 
 * If you are ready -- it can be the start of your project package.
 
