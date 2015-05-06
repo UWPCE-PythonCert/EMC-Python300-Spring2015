@@ -7,7 +7,7 @@ class TemporaryDirectory(object):
     def __enter__(self):
         # set things up
         self.directory = os.path.join(self.base_directory, str(random.random()))
-	print self.directory
+        print self.directory
         os.makedirs(self.directory)
         return self.directory
 
