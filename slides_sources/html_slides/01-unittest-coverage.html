@@ -40,30 +40,7 @@
     <section class="slide">
         <h2>System Development with Python</h2>
         <h3>Week 1 :: unit testing review / coverage</h3>
-        <p>Joseph Sheedy</p>
-        <p><i>joseph.sheedy@gmail.com</i></p>
-        <p>Git repository:  <a href="https://github.com/UWPCE-PythonCert/SystemDevelopment2015" target="_blank">https://github.com/UWPCE-PythonCert/SystemDevelopment2015</a></p>
-    </section>
-<!--
-    <section class="slide">
-        <h2>System Development with Python</h2>
-            <p>To view the slides, you can either browse to the location of your git checkout on your filesystem, or serve it with Python's SimpleHTTPServer:
-    <pre>
-    <code>
-$ pushd $HOME/work/UW_Python/git/Python300-SystemDevelopmentWithPython-Spring-2014
-$ python -m SimpleHTTPServer
-Serving HTTP on 0.0.0.0 port 8000 ...
-    </code>
-    </pre>
-
-    </section>
--->
-    <section class="slide">
-        <h1>Unit testing review, with coverage</h1>
-    </section>
-
-    <section class="slide">
-        <h1>Example application, calculator.py</h1>
+        <p>Adapted from Joseph Sheedy's material</p>
     </section>
 
     <section class="slide">
@@ -84,12 +61,13 @@ while True:
         func()
         </code></pre>
 </section>
+
 <section class="slide">
         <h2>Levels of testing:</h2>
             <ul>
                 <li>Unit tests
-                <li>High level system tests
                 <li>Integration tests
+		<li>System Testing
                 <li>Black box / White box testing
             </ul>
     </section>
@@ -393,13 +371,14 @@ if __name__ == '__main__':
 
     <section class="slide">
         <h2>Exercises</h2>
-        <ul>
+        <ol>
             <li>Add unit tests for each method in calculator_functions.py
-            <li>Add fixtures via setUp/tearDown methods and setUpClass/tearDownClass class methods.  Are they behaving how you expect?
+            <li>Use setUp/tearDown methods to setup test fixtures. Do you understand how they behave? 
             <li>Add additional unit tests for floating point calculations
-            <li>Fix any failures in the code
-            <li>Add doctests to calculator_functions.py
-        </ul>
+            <li>Try adding doctests to calculator_functions.py
+	    <li>When your tests are done, try running the 'coverage' command on them. Hint: 'nosetests' takes a couple of flags
+		<pre>--with-coverage --cover-branches</pre>
+        </ol>
     </section>
 
     <section class="slide">

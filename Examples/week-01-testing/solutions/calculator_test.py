@@ -21,7 +21,7 @@ class TestCalculatorFunctions(unittest.TestCase):
         self.assertAlmostEqual(calc.divide(self.x, self.y), .6666, places=3 )
 
     def test_divide_by_zero(self):
-        self.assertRaises(Exception, calc.divide, (self.x, self.y))
+        self.assertRaises(Exception, calc.divide, (self.x, 0))
          
 
 if __name__ == "__main__":
