@@ -1,5 +1,13 @@
 $main-color: #515151;
 
+::-moz-selection { /* Code for Firefox */
+    color: red;
+    background: lightgray;
+}
+::selection {
+    color: red; 
+    background: lightgray;
+}
 body {
   -webkit-transition: opacity 200ms ease-in;
   -webkit-transition-delay: 50ms;
