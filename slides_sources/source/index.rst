@@ -25,3 +25,16 @@ Week 1
   :ref:`unicode`
 
 
+Week 2
+===========
+
+.. rst-class:: left
+
+  :ref:`documentation`
+
+  :ref:`weak_references`
+
+  `PEP-8 <html_slides/pep8/index.html>`_
+
+
+
