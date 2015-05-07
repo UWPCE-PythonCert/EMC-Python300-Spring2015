@@ -20,4 +20,4 @@ with TemporaryDirectory("/tmp/foo") as dir:
     with open(os.path.join(dir, "foo.txt"), 'wb') as f:
         f.write("foo")
 
-    time.sleep(5)
+    time.sleep(10)

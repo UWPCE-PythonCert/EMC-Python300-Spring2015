@@ -24,7 +24,7 @@ It's also useful if you need to work with cobined text+binary data.
 """
 
 # all the byte values in a bytes (str) object:
-all_bytes = ''.join( [chr(i) for i in range(257)] )
+all_bytes = ''.join( [chr(i) for i in range(255)] )
 
 print type(all_bytes)
 print len(all_bytes)
