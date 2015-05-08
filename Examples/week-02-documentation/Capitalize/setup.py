@@ -18,7 +18,6 @@ setup(
     author_email='PythonCHB@gmail.com',
     packages=['capitalize',
               'capitalize/test'],
-    scripts=['bin/cap_script',],
     license='LICENSE.txt',
     description='Not very useful capitalizing module and script',
     long_description=open('README.txt').read(),

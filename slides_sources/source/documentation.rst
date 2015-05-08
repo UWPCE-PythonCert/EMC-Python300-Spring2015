@@ -4,39 +4,28 @@
 Documentation
 -------------
 
-A (very) quick run down of how to document your python package.
-
-* Chris Barker
-
+A (very) quick run down of how to document your python package
 
 Why
-===
+=====
 
 .. rst-class:: left
 
-  Documentation is a key part of software development.
+Documentation is key to software development:
+ - even if you are the only user
 
-  You'll be glad you have it, even if you are the only one that uses your code.
+ - it can be the difference between the success/failure of a package
 
-  If you are writing a package you want others to use -- documentation can make all the difference
-
-  And there are some nice tools for documenting Python code.
-
-  There is even a hosting service:
-
-   - http://readthedocs.org
-
+What are the standard community tools to use for Python documentation?
 
 Sphinx
 --------
 
-Sphinx is a documentation system build specifically for documenting Python itself:
+Sphinx is a documentation system built specifically for Python:
 
 http://spinx-doc.org
 
-But it's also useful for any sort of structured documentation -- and is sometimes used for non-code projects.
-
-It Produces:
+But it's also useful for any sort of structured documentation -- and is sometimes used for non-code projects:
  * HTML (multiple styles available)
  * PDF(via LaTeX)
  * ePub
@@ -44,15 +33,25 @@ It Produces:
  * plain text
  * and others!
 
+Read The Docs Hosting
+------------------------
+
+- a hosting service for your documentation that works with Sphinx!
+
+- create ``webhooks`` in git, mercurial or other VC(s) to auto build docs after commits
+
+- read more about the hosting service:
+
+http://readthedocs.org
+
+
 Extendability
 --------------
 
 Sphinx has an extension architecture for adding special functionality:
-  * Hieroglyph (It is used for these slides...)
+  * Hieroglyph (it is used for these slides...)
 
-  * Matplotlib added some nice stuff:
-
-   - http://matplotlib.org
+  * Matplotlib added some nice stuff(  http://matplotlib.org )
 
   * Math
 
@@ -65,13 +64,12 @@ Sphinx has an extension architecture for adding special functionality:
 Automatic Documentation
 ------------------------
 
-One of the great features of Sphinx:
+Features of Sphinx:
+    * it can extract docstrings from your code and build docs from them.
 
-It can extract docstrings from your code and build docs from them.
+    * includes cross referencing of modules and classes, etc.
 
-Includes cross referencing of modules and classes, etc.
-
-This keeps your code and docs in sync, and encourages you to have nice docstrings.
+    * keep your code and docs in sync, encourages nice docstrings.
 
 It's a bit tricky to get it all set up though :-(
 
@@ -80,17 +78,19 @@ Documentation for the Documentation System
 
 Sphinx is, of course, documented with sphinx itself.
 
+The tutorial is pretty good, but can be a little confusing:
 
-Its tutorial is pretty good, but can be a little confusing (particularly the autodoc stuff)
-   - http://sphinx-doc.org/tutorial.html
+http://sphinx-doc.org/tutorial.html
 
-So here are a couple other resources (and many more out there):
+A couple other resources (and many more out there):
 
 Basic getting started tutorial:
- - https://pythonhosted.org/an_example_pypi_project/sphinx.html
+
+https://pythonhosted.org/an_example_pypi_project/sphinx.html
 
 Tutorial focused on getting autodoc set up:
- - http://codeandchaos.wordpress.com/2012/07/30/sphinx-autodoc-tutorial-for-dummies/
+
+http://codeandchaos.wordpress.com/2012/07/30/sphinx-autodoc-tutorial-for-dummies/
 
 
 
