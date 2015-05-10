@@ -40,23 +40,7 @@
     <section class="slide">
         <h2>System Development with Python</h2>
         <h3>Week 2 :: PEP-8 / analysis tools</h3>
-        <p>Joseph Sheedy and Chris Barker</p>
-        <p><i>joseph.sheedy@gmail.com</i></p>
-        <p><i>PythonCHB@gmail.com</i></p>
-        <p>Git repository:  <a href="https://github.com/UWPCE-PythonCert/SystemDevelopment2015" target="_blank">https://github.com/UWPCE-PythonCert/SystemDevelopment2015</a></p>
-    </section>
-
-    <section class="slide">
-        <h2>System Development with Python</h2>
-            <p>To view the slides, you can either browse to the location of your git checkout on your filesystem, or serve it with Python's SimpleHTTPServer:
-    <pre>
-    <code>
-$ pushd $HOME/work/UW_Python/git/UWPCE-PythonCert/SystemDevelopment2015
-$ python -m SimpleHTTPServer
-Serving HTTP on 0.0.0.0 port 8000 ...
-    </code>
-    </pre>
-
+        <p>Adapted from Joseph Sheedy's and Chris Barker's materials</p>
     </section>
 
     <section class="slide">
@@ -150,6 +134,7 @@ Serving HTTP on 0.0.0.0 port 8000 ...
         </ul>
     </section>
 
+    <!--
     <section class="slide">
         <h2>pychecker</h2>
         <p>Interesting options to turn on which are off by default:
@@ -164,13 +149,14 @@ Serving HTTP on 0.0.0.0 port 8000 ...
         <p>What can you spot as an error, bad practice, or poor style?
         <p class="slide">Now let's see what pychecker Listing1.py has to say about it
     </section>
+    -->
 
-    <section class="slide">
+    <!-- <section class="slide">
         <h2>pylint</h2>
         <p>Interesting options:
 <pre><code>
--d (msg ids), --disable=(msg ids)      Disable the messages identified in the messages table
---generate-rcfile/--rcfile             Saves/restores a configuration
+-d (msg ids), - -disable=(msg ids)      Disable the messages identified in the messages table
+- -generate-rcfile/- -rcfile             Saves/restores a configuration
 </pre></code>
         </ul>
         <p class="slide">Now let's see what pylint Listing1.py has to say
@@ -179,6 +165,7 @@ Serving HTTP on 0.0.0.0 port 8000 ...
 
 
     </section>
+    -->
 
     <section class="slide">
         <h2>pyflakes</h2>
@@ -219,6 +206,22 @@ Serving HTTP on 0.0.0.0 port 8000 ...
     </section>
 
     <section class="slide">
+        <h2>flake8...demo</h2>
+        <p><i>Where can I look up error codes?</i></p>
+        <ul>
+            <li>prefixes E,W are part of PEP8</li>
+            <li>prefixes F are part of pyflakes</li>
+            <li>C is part of mccabe plugin</li>
+        </ul>
+        <a href="https://flake8.readthedocs.org/en/2.3.0/warnings.html">Flake8 ReadTheDocs</a>
+        <p>
+        <p><i>What is cyclomatic complexity and how can i reason about it?</i></p>
+        <a href="http://docs.klocwork.com/Insight-10.0/McCabe_Cyclomatic_Complexity">Good Overview</a>
+        <pre><code>1 + ifs + loops + switch cases</code></pre>
+    </section>
+
+<!--
+    <section class="slide">
         <h2>analyzing a larger codebase in the wild</h2>
 <pre><code>
 pushd $HOME/virtualenvs/uwpce/lib/python2.7/site-packages
@@ -244,6 +247,7 @@ flake8 pylint
 </code></pre>
 
     </section>
+-->
 
     <section class="slide">
         <h2>analysis tool summary</h2>

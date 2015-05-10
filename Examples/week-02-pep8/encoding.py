@@ -1,6 +1,6 @@
+# coding: utf-8
 
 x = "🐳"
 
 print "whale: " + x
 
-# coding: utf-8
