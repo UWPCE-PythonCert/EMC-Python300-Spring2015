@@ -4,11 +4,7 @@
 Python Memory Management and Weak References
 *********************************************
 
-Chris Barker
-
-``PythonCHB@gmail.com``
-
-``https://github.com/PythonCHB``
+Adapted from Chris Barker's materials
 
 ==================
 Memory Management
@@ -73,8 +69,7 @@ How do I see what's going on?
   import sys
   sys.getrefcount(object)
 
-
-**NOTE:** This will always return one more than you'd expect, as passing the object to the function increases its refcount by one:
+.. note:: This will always return one more than you'd expect, as passing the object to the function increases its refcount by one:
 
 .. code-block:: ipython
 
@@ -89,8 +84,6 @@ The Heisenberg Uncertainty Principle:
 
 Playing with References
 ------------------------
-
-(live demo)
 
 .. code-block:: ipython
 
@@ -148,6 +141,13 @@ Playing with References
 
 .. nextslide::
 
+
+Example ``tricky_refcount.py``
+
+
+.. nextslide::
+
+
 .. code-block:: ipython
 
 	In [21]: x = 3
@@ -170,8 +170,6 @@ The Power of Reference Counting
 
 * Objects get deleted right away
 
-   . They can "clean up" on deletion (files, for instance) -- and it will happen right away.
-
 * Performance is predictable
 
 
@@ -187,7 +185,7 @@ The Limits of Reference Counting
 If a python object somehow references itself -- i.e. it references another object that references the first
 object:
 
-You have a circular reference ...
+You have a circular reference, in the Python docs it's called a `reference cycle`
 
 ===================
 Circular References
@@ -248,8 +246,6 @@ It searches for reference cycles -- then cleans those up.
 
    * It doesn't have to bother checking non-container types (ints, strings, etc.)
 
-   * Faster, and not as dependent on having a clear "root" namespace.
-
 Details here:
 
 http://arctrix.com/nas/python/gc/  (or in the source!)
@@ -259,7 +255,23 @@ Big issue: classes that define a ``__del__`` method are not cleaned up.
   * ``__del__`` methods often act on references that may no be there if
     they are cleaned up in the wrong order.
 
-NOTE: you can work with gc.garbage() -- but tricky and messy
+Examples
+-----------
+
+.. code-block:: ipython
+
+    In [1]: from simple_circular_classes import *
+
+    In [2]: x = PyObjWithDel()
+
+    In [3]: x = None
+    deleting PyObjWithDel object at 140459942915664
+
+    In [4]: x = PyObjWithDel()
+
+    In [5]: del x
+    deleting PyObjWithDel object at 140459942915600
+
 
 =====
 Tools
@@ -290,55 +302,55 @@ provides functions that report the memory use of the current running process.
 
 (\*nix and Windows code)
 
-id checks
-----------
+..
+    id checks
+    ----------
 
-As it happens, the Python ``id()`` function returns a memory address.
+    As it happens, the Python ``id()`` function returns a memory address.
 
-It's really dangerous, but that means we can examine an object if we know
-its `id`, even if we don't hold a reference to it.
+    It's really dangerous, but that means we can examine an object if we know
+    its `id`, even if we don't hold a reference to it.
 
-Bill Bumgarner wrote a nifty extension module that returns the python
-object pointed to by an id (memory address) -- "di":
+    Bill Bumgarner wrote a nifty extension module that returns the python
+    object pointed to by an id (memory address) -- "di":
 
-http://www.friday.com/bbum/2007/08/24/python-di/
+    http://www.friday.com/bbum/2007/08/24/python-di/
 
-I added a function that returns the reference count of an object from its id.
+    I added a function that returns the reference count of an object from its id.
 
-https://github.com/PythonCHB/di_refcount
+    https://github.com/PythonCHB/di_refcount
 
-NOTE: it would be a really bad idea to use these in production code!
+    NOTE: it would be a really bad idea to use these in production code!
 
-Examples
-----------
+    Examples
+    ----------
 
-:download:`simple_circular_di.py <../../Examples/week-02-ref_counting/simple_circular_di.py>`
+    :download:`simple_circular_di.py <../../Examples/week-02-ref_counting/simple_circular_di.py>`
 
-uses the ref_by_id() function to see what's going on with a circular
-reference and garbage collection.
+    uses the ref_by_id() function to see what's going on with a circular
+    reference and garbage collection.
 
-More real examples in iPython notebook:
+    More real examples in iPython notebook:
 
-:download:`CircularReferenceExample.ipynb  <../../Examples/week-02-ref_counting/CircularReferenceExample.ipynb>`
+    :download:`CircularReferenceExample.ipynb  <../../Examples/week-02-ref_counting/CircularReferenceExample.ipynb>`
 
-Or: :download:`circular.py <../../Examples/week-02-ref_counting/circular.py>`
+    Or: :download:`circular.py <../../Examples/week-02-ref_counting/circular.py>`
 
-:download:`memcount.py <../../Examples/week-02-ref_counting/memcount.py>` is a test
-file that show memory growth if circular references are not cleaned up.
+    :download:`memcount.py <../../Examples/week-02-ref_counting/memcount.py>` is a test
+    file that show memory growth if circular references are not cleaned up.
 
-( :download:`mem_check.py <../../Examples/week-02-ref_counting//mem_check.py>` )
-is code that reports process memory use.
+    ( :download:`mem_check.py <../../Examples/week-02-ref_counting//mem_check.py>` )
+    is code that reports process memory use.
 
-You can find this code in the main repo here:
+    You can find this code in the main repo here:
 
-https://github.com/UWPCE-PythonCert/SystemDevelopment2015/tree/master/Examples/week-02-ref_counting
+    https://github.com/UWPCE-PythonCert/SystemDevelopment2015/tree/master/Examples/week-02-ref_counting
 
 
 Weak References
 -----------------
 
-For times when you don't want to keep objects alive, Python provides
-"weak references" -- we saw this in the examples.
+For times when you want to keep objects alive, Python provides "weak references" 
 
 (https://docs.python.org/2/library/weakref.html)
 
@@ -357,6 +369,11 @@ For times when you don't want to keep objects alive, Python provides
 3. ``WeakRef`` objects
 
   - When you want to control what happens when the referenced object is gone.
+
+Example
+---------
+
+Run `memcount.py` by toggling the `proxy` line
 
 =========
 Exercise

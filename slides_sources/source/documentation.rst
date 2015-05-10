@@ -108,9 +108,8 @@ Like many similar markup languages (Markdown, etc.)
  * makes sense in plain text
  * looks a lot like what you might write in plain text anyway.
 
-So it's suitable for use both as plain text and for fancier formatting (i.e. docstrings)
-
-But more extensible than most others -- so good for sphinx
+.. So it's suitable for use both as plain text and for fancier formatting (i.e. docstrings)
+.. But more extensible than most others -- so good for sphinx
 
 
 reStructuredText
@@ -141,6 +140,15 @@ reStructuredText
 reStructuredText documentation sources
 ---------------------------------------
 
+Some docs to get started:
+
+ - http://docutils.sourceforge.net/rst.html
+
+ - http://docutils.sourceforge.net/docs/user/rst/quickstart.html
+
+reStructuredText Directives
+------------------------------
+
 RST directives::
 
   .. toctree::
@@ -149,13 +157,6 @@ RST directives::
 ``toctree`` is a reStructuredText directive:
 
 Directives can have arguments, options and content
-
-Some docs to get started:
-
- - http://docutils.sourceforge.net/rst.html
-
- - http://docutils.sourceforge.net/docs/user/rst/quickstart.html
-
 
 Sphinx Directives for docstrings
 ---------------------------------
