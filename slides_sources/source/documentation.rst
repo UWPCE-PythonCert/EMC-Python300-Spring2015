@@ -298,56 +298,6 @@ Or::
 
 Take a look at ``build/html/index.html``
 
-
-Getting Started with Writing:
-------------------------------
-
-The ``index.rst`` file will look like this::
-
-  Welcome to Capitalize's documentation!
-  ======================================
-
-  Contents:
-
-  .. toctree::
-     :maxdepth: 2
-
-  Indices and tables
-  ==================
-
-  * :ref:`genindex`
-  * :ref:`modindex`
-  * :ref:`search`
-
-
-
-A tiny bit of RST
------------------
-
-Underlining creates headings::
-
-    Welcome to Capitalize's documentation!
-    ======================================
-
-This will give you a lower level heading::
-
-    Welcome to a Subsection
-    ------------------------
-
-(each new underlining character you introduce goes another level down.)
-
-A tiny bit of RST
-------------------
-
-The ``..`` is either a comment or a "directive"::
-
-  .. toctree::
-     :maxdepth: 2
-
-if sphinx understand the directive ``toctree``, then it is used. Otherwise, it is treated as a comment.
-
-``toctree`` builds a table of contents tree.
-
 AutoDoc
 --------
 
@@ -355,15 +305,87 @@ AutoDoc extracts the docstrings from your code.
 
 In order to find them -- sphinx needs to be able to import the code.
 
-Another reason to build a package and use ``develop`` mode!
-
 Alternatively, you can add the path to your code by adding this to the conf.py file::
 
   os.path.abspath('mydir/myfile.txt')
 
-(Path is relative to the conf.py file)
+(Path is relative to the conf.py file). Good luck getting that to work.
 
 But I'm not going to do that, 'cause I use ``develop`` mode
+
+There's 2 ways to use AutoDoc -- as a CLI tool and manually
+
+APIdoc
+-------
+
+For a substantial package, hand writing all those files and autodoc directives can get pretty tedious.
+
+So you can use APIdoc::
+
+  sphinx-apidoc [options] -o <outputdir> <sourcedir> [pathnames ...]
+
+  $ sphinx-apidoc -o test ../capitalize
+  Creating file test/capitalize.rst.
+  Creating file test/capitalize.test.rst.
+  Creating file test/modules.rst.
+
+This is actually pretty slick....
+
+Manual Autodoc
+----------------
+
+Let's look at the ``Capitalize`` project in ``week-02-documentation/solution`` that was manually created
+
+..
+    Getting Started with Writing:
+    ------------------------------
+
+    The ``index.rst`` file will look like this::
+
+      Welcome to Capitalize's documentation!
+      ======================================
+
+      Contents:
+
+      .. toctree::
+         :maxdepth: 2
+
+      Indices and tables
+      ==================
+
+      * :ref:`genindex`
+      * :ref:`modindex`
+      * :ref:`search`
+
+
+
+    A tiny bit of RST
+    -----------------
+
+    Underlining creates headings::
+
+        Welcome to Capitalize's documentation!
+        ======================================
+
+    This will give you a lower level heading::
+
+        Welcome to a Subsection
+        ------------------------
+
+    (each new underlining character you introduce goes another level down.)
+
+    A tiny bit of RST
+    ------------------
+
+    The ``..`` is either a comment or a "directive"::
+
+      .. toctree::
+         :maxdepth: 2
+
+    if sphinx understand the directive ``toctree``, then it is used. Otherwise, it is treated as a comment.
+
+    ``toctree`` builds a table of contents tree.
+
 
 Adding Autodoc to your docs.
 ----------------------------
@@ -432,22 +454,6 @@ For most projects, you'll want multiple pages in your docs. You can put each in 
 Then you need to create and populate those files - make sure they have a header!
 
 I put the autocdoc stuff in the api.rst file...
-
-APIdoc
--------
-
-For a substantial package, hand writing all those files and autodoc directives can get pretty tedious.
-
-So you can use APIdoc::
-
-  sphinx-apidoc [options] -o <outputdir> <sourcedir> [pathnames ...]
-
-  $ sphinx-apidoc -o test ../capitalize
-  Creating file test/capitalize.rst.
-  Creating file test/capitalize.test.rst.
-  Creating file test/modules.rst.
-
-This is actually pretty slick....
 
 
 Sphinx Appearance
