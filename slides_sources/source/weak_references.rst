@@ -10,7 +10,7 @@ Adapted from Chris Barker's materials
 Memory Management
 ==================
 
-..  rst-class:: left
+.. rst-class:: left
 
  * You don't want python objects that are no longer in use taking up memory.
  * You don't want to keep track of all that yourself.

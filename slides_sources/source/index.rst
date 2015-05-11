@@ -36,5 +36,7 @@ Week 2
 
   `PEP-8 <html_slides/pep8/index.html>`_
 
+  :ref:`testing_addendum`
+
 
 
