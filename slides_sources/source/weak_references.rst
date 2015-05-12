@@ -185,7 +185,9 @@ The Limits of Reference Counting
 If a python object somehow references itself -- i.e. it references another object that references the first
 object:
 
-You have a circular reference, in the Python docs it's called a `reference cycle`
+You have a circular reference!
+
+In the Python docs it's called a `reference cycle`
 
 ===================
 Circular References
@@ -255,8 +257,10 @@ Big issue: classes that define a ``__del__`` method are not cleaned up.
   * ``__del__`` methods often act on references that may no be there if
     they are cleaned up in the wrong order.
 
-Examples
------------
+Examples ( ref counting vs garbage collection )
+----------------------------------------------------
+
+Run the example in ``Examples/week-02-ref_counting/simple_circular_classes.py``
 
 .. code-block:: ipython
 

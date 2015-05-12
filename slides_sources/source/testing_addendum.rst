@@ -14,7 +14,7 @@ Automate As Much As Possible
 .. rst-class:: left
 
 
-The tooling and analysis that helps you write good code gets annoying.  Earlier examples showed us tools such as: 
+The tooling and analysis that helps you write good code can be cumbersome to manage.  Earlier examples showed us tools such as: 
 
 ``coverage`` ( detail where you need more tests )
 
@@ -46,11 +46,12 @@ IDE Examples
 
 Common Python IDE(s): 
 
-    * Apatana Studio
+    * Aptana Studio
 
     * PyDev
 
     * PyCharm
+
 
 PyCharm Example ( Coverage and PEP8 )
 -------------------------------------------

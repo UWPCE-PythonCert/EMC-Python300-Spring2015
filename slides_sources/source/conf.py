@@ -289,18 +289,9 @@ slide_theme_options = {
     # 'custom_js': 'custom.js',
     'presenters': [
         {
-            'name': u'Christopher Barker',
-            'email': u'PythonCHB@gmail.com',
-            'github': u'https://github.com/PythonCHB',
-            'company': u'UW Professional and Continuing Education'
-        },
-        {
-            'name': 'Joseph Sheedy',
-            'email': u'PythonCHB@gmail.com',
-            'www': 'http://www.velotronheavyindustries.com/',
-            'github': 'https://github.com/jsheedy',
-            'company': u'Velotron Heavy Industries'
-        },
+            'name': u'Greg Corradini',
+            'email': u'gregcorradini+uwpce@gmail.com'
+        }
     ]
 }
 
@@ -311,10 +302,10 @@ slide_theme_options = {
 # -- Options for Epub output ----------------------------------------------
 
 # Bibliographic Dublin Core info.
-epub_title = u'System Development with Python'
-epub_author = u'Christopher Barker'
-epub_publisher = u'Christopher Barker'
-epub_copyright = u'2015, Christopher Barker, Joseph Sheedy'
+#epub_title = u'System Development with Python'
+#epub_author = u'Christopher Barker'
+#epub_publisher = u'Christopher Barker'
+#epub_copyright = u'2015, Christopher Barker, Joseph Sheedy'
 
 # The basename for the epub file. It defaults to the project name.
 #epub_basename = u'Foundations 2: Python'
