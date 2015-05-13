@@ -1,9 +1,10 @@
 #!/usr/bin/env python
-
 """
-Simple contrived example of circular reference counting
+Simple contrived example of circular reference. 
+In Python documentation a cirucular reference is
+referred to by it's more sophisticated name
+'reference cycle'
 """
-
 import sys
 
 l1 = [1,]
@@ -24,12 +25,14 @@ print "ref counts after the circular reference is added"
 print "l1:", l1, "refcount:", sys.getrefcount(l1)
 print "l2:", l2, "refcount:", sys.getrefcount(l2)
 
-print "delete one"
+print ""
 del l1
 print "l2:", sys.getrefcount(l2)
 
 print "delete the other"
 del l2
+import gc
+print gc.collect()
 
 print "but are they still there???"
 

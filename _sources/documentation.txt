@@ -4,39 +4,28 @@
 Documentation
 -------------
 
-A (very) quick run down of how to document your python package.
-
-* Chris Barker
-
+A (very) quick run down of how to document your python package
 
 Why
-===
+=====
 
 .. rst-class:: left
 
-  Documentation is a key part of software development.
+Documentation is key to software development:
+ - even if you are the only user
 
-  You'll be glad you have it, even if you are the only one that uses your code.
+ - it can be the difference between the success/failure of a package
 
-  If you are writing a package you want others to use -- documentation can make all the difference
-
-  And there are some nice tools for documenting Python code.
-
-  There is even a hosting service:
-
-   - http://readthedocs.org
-
+What are the standard community tools to use for Python documentation?
 
 Sphinx
 --------
 
-Sphinx is a documentation system build specifically for documenting Python itself:
+Sphinx is a documentation system built specifically for Python:
 
 http://spinx-doc.org
 
-But it's also useful for any sort of structured documentation -- and is sometimes used for non-code projects.
-
-It Produces:
+But it's also useful for any sort of structured documentation -- and is sometimes used for non-code projects:
  * HTML (multiple styles available)
  * PDF(via LaTeX)
  * ePub
@@ -44,15 +33,25 @@ It Produces:
  * plain text
  * and others!
 
+Read The Docs Hosting
+------------------------
+
+- a hosting service for your documentation that works with Sphinx!
+
+- create ``webhooks`` in git, mercurial or other VC(s) to auto build docs after commits
+
+- read more about the hosting service:
+
+http://readthedocs.org
+
+
 Extendability
 --------------
 
 Sphinx has an extension architecture for adding special functionality:
-  * Hieroglyph (It is used for these slides...)
+  * Hieroglyph (it is used for these slides...)
 
-  * Matplotlib added some nice stuff:
-
-   - http://matplotlib.org
+  * Matplotlib added some nice stuff(  http://matplotlib.org )
 
   * Math
 
@@ -65,13 +64,12 @@ Sphinx has an extension architecture for adding special functionality:
 Automatic Documentation
 ------------------------
 
-One of the great features of Sphinx:
+Features of Sphinx:
+    * it can extract docstrings from your code and build docs from them.
 
-It can extract docstrings from your code and build docs from them.
+    * includes cross referencing of modules and classes, etc.
 
-Includes cross referencing of modules and classes, etc.
-
-This keeps your code and docs in sync, and encourages you to have nice docstrings.
+    * keep your code and docs in sync, encourages nice docstrings.
 
 It's a bit tricky to get it all set up though :-(
 
@@ -80,17 +78,19 @@ Documentation for the Documentation System
 
 Sphinx is, of course, documented with sphinx itself.
 
+The tutorial is pretty good, but can be a little confusing:
 
-Its tutorial is pretty good, but can be a little confusing (particularly the autodoc stuff)
-   - http://sphinx-doc.org/tutorial.html
+http://sphinx-doc.org/tutorial.html
 
-So here are a couple other resources (and many more out there):
+A couple other resources (and many more out there):
 
 Basic getting started tutorial:
- - https://pythonhosted.org/an_example_pypi_project/sphinx.html
+
+https://pythonhosted.org/an_example_pypi_project/sphinx.html
 
 Tutorial focused on getting autodoc set up:
- - http://codeandchaos.wordpress.com/2012/07/30/sphinx-autodoc-tutorial-for-dummies/
+
+http://codeandchaos.wordpress.com/2012/07/30/sphinx-autodoc-tutorial-for-dummies/
 
 
 
@@ -108,9 +108,8 @@ Like many similar markup languages (Markdown, etc.)
  * makes sense in plain text
  * looks a lot like what you might write in plain text anyway.
 
-So it's suitable for use both as plain text and for fancier formatting (i.e. docstrings)
-
-But more extensible than most others -- so good for sphinx
+.. So it's suitable for use both as plain text and for fancier formatting (i.e. docstrings)
+.. But more extensible than most others -- so good for sphinx
 
 
 reStructuredText
@@ -141,6 +140,15 @@ reStructuredText
 reStructuredText documentation sources
 ---------------------------------------
 
+Some docs to get started:
+
+ - http://docutils.sourceforge.net/rst.html
+
+ - http://docutils.sourceforge.net/docs/user/rst/quickstart.html
+
+reStructuredText Directives
+------------------------------
+
 RST directives::
 
   .. toctree::
@@ -149,13 +157,6 @@ RST directives::
 ``toctree`` is a reStructuredText directive:
 
 Directives can have arguments, options and content
-
-Some docs to get started:
-
- - http://docutils.sourceforge.net/rst.html
-
- - http://docutils.sourceforge.net/docs/user/rst/quickstart.html
-
 
 Sphinx Directives for docstrings
 ---------------------------------
@@ -297,56 +298,6 @@ Or::
 
 Take a look at ``build/html/index.html``
 
-
-Getting Started with Writing:
-------------------------------
-
-The ``index.rst`` file will look like this::
-
-  Welcome to Capitalize's documentation!
-  ======================================
-
-  Contents:
-
-  .. toctree::
-     :maxdepth: 2
-
-  Indices and tables
-  ==================
-
-  * :ref:`genindex`
-  * :ref:`modindex`
-  * :ref:`search`
-
-
-
-A tiny bit of RST
------------------
-
-Underlining creates headings::
-
-    Welcome to Capitalize's documentation!
-    ======================================
-
-This will give you a lower level heading::
-
-    Welcome to a Subsection
-    ------------------------
-
-(each new underlining character you introduce goes another level down.)
-
-A tiny bit of RST
-------------------
-
-The ``..`` is either a comment or a "directive"::
-
-  .. toctree::
-     :maxdepth: 2
-
-if sphinx understand the directive ``toctree``, then it is used. Otherwise, it is treated as a comment.
-
-``toctree`` builds a table of contents tree.
-
 AutoDoc
 --------
 
@@ -354,15 +305,87 @@ AutoDoc extracts the docstrings from your code.
 
 In order to find them -- sphinx needs to be able to import the code.
 
-Another reason to build a package and use ``develop`` mode!
-
 Alternatively, you can add the path to your code by adding this to the conf.py file::
 
   os.path.abspath('mydir/myfile.txt')
 
-(Path is relative to the conf.py file)
+(Path is relative to the conf.py file). Good luck getting that to work.
 
 But I'm not going to do that, 'cause I use ``develop`` mode
+
+There's 2 ways to use AutoDoc -- as a CLI tool and manually
+
+APIdoc
+-------
+
+For a substantial package, hand writing all those files and autodoc directives can get pretty tedious.
+
+So you can use APIdoc::
+
+  sphinx-apidoc [options] -o <outputdir> <sourcedir> [pathnames ...]
+
+  $ sphinx-apidoc -o test ../capitalize
+  Creating file test/capitalize.rst.
+  Creating file test/capitalize.test.rst.
+  Creating file test/modules.rst.
+
+This is actually pretty slick....
+
+Manual Autodoc
+----------------
+
+Let's look at the ``Capitalize`` project in ``week-02-documentation/solution`` that was manually created
+
+..
+    Getting Started with Writing:
+    ------------------------------
+
+    The ``index.rst`` file will look like this::
+
+      Welcome to Capitalize's documentation!
+      ======================================
+
+      Contents:
+
+      .. toctree::
+         :maxdepth: 2
+
+      Indices and tables
+      ==================
+
+      * :ref:`genindex`
+      * :ref:`modindex`
+      * :ref:`search`
+
+
+
+    A tiny bit of RST
+    -----------------
+
+    Underlining creates headings::
+
+        Welcome to Capitalize's documentation!
+        ======================================
+
+    This will give you a lower level heading::
+
+        Welcome to a Subsection
+        ------------------------
+
+    (each new underlining character you introduce goes another level down.)
+
+    A tiny bit of RST
+    ------------------
+
+    The ``..`` is either a comment or a "directive"::
+
+      .. toctree::
+         :maxdepth: 2
+
+    if sphinx understand the directive ``toctree``, then it is used. Otherwise, it is treated as a comment.
+
+    ``toctree`` builds a table of contents tree.
+
 
 Adding Autodoc to your docs.
 ----------------------------
@@ -431,22 +454,6 @@ For most projects, you'll want multiple pages in your docs. You can put each in 
 Then you need to create and populate those files - make sure they have a header!
 
 I put the autocdoc stuff in the api.rst file...
-
-APIdoc
--------
-
-For a substantial package, hand writing all those files and autodoc directives can get pretty tedious.
-
-So you can use APIdoc::
-
-  sphinx-apidoc [options] -o <outputdir> <sourcedir> [pathnames ...]
-
-  $ sphinx-apidoc -o test ../capitalize
-  Creating file test/capitalize.rst.
-  Creating file test/capitalize.test.rst.
-  Creating file test/modules.rst.
-
-This is actually pretty slick....
 
 
 Sphinx Appearance
