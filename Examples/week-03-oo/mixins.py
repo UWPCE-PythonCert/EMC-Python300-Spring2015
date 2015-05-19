@@ -27,7 +27,9 @@ class Tank(HeavyVehicle):
     pass
 
 bike = Bike()
+#print Bike.mro()
 tank = Tank()
+#print Tank.mro()
 
 bike.log()
 tank.log()

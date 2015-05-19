@@ -140,6 +140,7 @@ cs = ColoredShape(color='red', shapename='circle')
 </code></pre>
 </section>
 
+
 <section class="slide">
 <h2>Multiple Inheritance</h2>
 <p>A class may be derived from multiple base classes
@@ -225,6 +226,18 @@ class A(X,Y): pass
 class B(Y,X): pass
 
 class C(A,B): pass</code></pre>
+</section>
+
+<section class="slide">
+<h2>super() Tricks and Trapdoors</h2>
+<p>super() delegates calls to next base in __mro__</p>
+<p><a href="">see /examples/week-03-oo/super/super_delegation.py</a>
+<p>argument matching with super() methods will bite you</p>
+<p><a href="">see /examples/week-03-oo/super/super_arg_confusion.py</a>
+<p>last ancestor in inheritance tree should swallow some methods</p>
+<p><a href="">see /examples/week-03-oo/super/super_last_ancestor_problem.py</a>
+<p>all overriden methods *must* use super()</p>
+<p><a href="">see /examples/week-03-oo/super/super_must_use_super.py</a>
 </section>
 
 <section class="slide">

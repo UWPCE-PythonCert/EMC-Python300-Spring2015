@@ -6,8 +6,6 @@ class Shape(object):
 
 class ColoredShape(Shape):
     def __init__(self, color, **kwargs):
-        print color
-        print kwargs
         self.color = color
         super(ColoredShape, self).__init__(**kwargs)
 
