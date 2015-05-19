@@ -34,17 +34,14 @@ if __name__ == '__main__':
     cache = Cache()
 
     foo = cache.find( PyObj( 'foo' ) )
-    assert foo.pid == 'foo'
     print "[ FOO ]: {}".format( sys.getrefcount( foo ) )
     del foo
 
     bar = cache.find( PyObj( 'bar' ) )
-    assert bar.pid == 'bar'  
     print "[ BAR ]: {}".format( sys.getrefcount( bar ) )
     del bar
     
     baz = cache.find( PyObj( 'baz' ) )
-    assert baz.pid == 'baz'  
     print "[ BAZ ]: {}".format( sys.getrefcount( baz ) )
     del baz
 

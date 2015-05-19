@@ -1,5 +1,7 @@
 import sys
 import gc
+gc.set_debug(gc.DEBUG_COLLECTABLE | gc.DEBUG_UNCOLLECTABLE | gc.DEBUG_OBJECTS)
+
 
 class PyObj(object):
 
@@ -25,7 +27,6 @@ class Cache(object):
         return self._find_or_create(obj)
 
     def get_ref_count(self):
-        # NOTE: why is ref count so high?
         for key in self._store.keys():
             print "name={}, ref_count={}".format( key, sys.getrefcount( self._store[ key ] ) ) 
 
@@ -34,21 +35,19 @@ if __name__ == '__main__':
     cache = Cache()
 
     foo = cache.find( PyObj( 'foo' ) )
-    assert foo.pid == 'foo'
     print "[ FOO ]: {}".format( sys.getrefcount( foo ) )
     del foo
 
     bar = cache.find( PyObj( 'bar' ) )
-    assert bar.pid == 'bar'  
     print "[ BAR ]: {}".format( sys.getrefcount( bar ) )
     del bar
     
     baz = cache.find( PyObj( 'baz' ) )
-    assert baz.pid == 'baz'  
     print "[ BAZ ]: {}".format( sys.getrefcount( baz ) )
     del baz
 
-    print gc.collect()
+    print "gc.collect: {}".format(gc.collect())
+    print "gc.garbage: {}".format(gc.garbage)
     cache.get_ref_count()
     
 
