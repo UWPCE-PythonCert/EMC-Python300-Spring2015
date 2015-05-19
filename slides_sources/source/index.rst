@@ -49,7 +49,7 @@ Week 3
 
   `advanced OO <html_slides/03-advanced-oo.html>`_
 
-    - \__new__(), super()
+    - super(), \__new__()
 
     - type, metaclasses
 
