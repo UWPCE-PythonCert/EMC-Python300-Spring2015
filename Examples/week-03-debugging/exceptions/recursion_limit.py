@@ -1,4 +1,4 @@
-import sys; sys.setrecursionlimit(10000)
+import sys; sys.setrecursionlimit(100)
 
 i = 0
 
