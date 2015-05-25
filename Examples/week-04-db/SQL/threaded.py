@@ -68,7 +68,7 @@ def writer():
         logging.debug("waiting to sync")
         ready.wait()
         logging.debug("PAUSING")
-        time.sleep(3)
+        time.sleep(5)
         conn.commit()
         logging.debug("CHANGES COMMITTED")
     return
@@ -97,7 +97,7 @@ if __name__ == '__main__':
     
     [t.start() for t in threads]
     
-    time.sleep(2)
+    time.sleep(10)
     logging.debug('sending sync event')
     ready.set()
     
