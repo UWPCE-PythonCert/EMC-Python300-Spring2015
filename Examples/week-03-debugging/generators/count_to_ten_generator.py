@@ -1,8 +1,8 @@
 def count_to_10():
-    #print "executing..."
+    print "executing..."
     for i in range(10):
         j = yield i
-        #print "continue..." 
+        print "continue..." 
         #print "received {}".format(j)
 
 if __name__ == '__main__':

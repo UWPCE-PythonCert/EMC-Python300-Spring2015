@@ -73,25 +73,25 @@ May 12th
 - Documentation (docstrings, sphinx)
 - Weak references
 - PEP-8 (pylint/pychecker/pyflakes)
+- Testing Addendum
 
 
 ### Week 3
 May 19th 
 
 #### Topics
+- Name Mangling and Decorator Addendum
 - Debugging (print, logging, pdb/ipdb, winpdb)
-- advanced OO:
-  - \__new__(), super()
-  - type, metaclasses
 
 
 ### Week 4
 May 26th
 
 #### Topics
-- Databases (DB-API w/ sqlite, postgres, mysql)
-- Non-relational DBs (ZODB, MongoDB, couchDB, BSDdb, Redis)
-- code reviews begin
+- Databases (DB-API w/ sqlite, NoSQL)
+- Advanced OO:
+  - super(), \__new__()
+  - type, metaclasses
 
 
 ### Week 5
