@@ -8,4 +8,8 @@ def count_to_10():
 if __name__ == '__main__':
     # NOTE: sequence of events
     # NOTE: adheres to iterator protocol
-    print list(count_to_10())
+    try:
+        for i in count_to_10():
+            print i
+    except StopIteration:
+        pass
