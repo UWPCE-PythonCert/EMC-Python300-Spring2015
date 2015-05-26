@@ -353,19 +353,118 @@ it’s too late to change it once you get to __init__ ( <a href="https://github.
     <p>The list is really long, it's mostly important to get a flavor of how they are used in Python so you can find and implement the right one when you need it.  See <a href="http://www.rafekettler.com/magicmethods.html">http://www.rafekettler.com/magicmethods.html</a> for more</p>
 </section>
 
+<section class="slide">
+<h2>Magic Methods and Attribute Lookups</h2>
+<p>What are the mechanics of a dot-operator attribute lookup? Let's focus on a class instance ( object ):<p>
+<pre><code>
+instance = Klass()
+instance.name <- how?
+instance.name = 'Bob' <- how?
+</code></pre>
+<p>Which methods provide hooks for overrides?</p>
+</section>
 
-<!-- <section class="slide">
-    <h2>Magic Methods</h2>
-    <p>They all start with and end with '__', and do things like support operators and comparisons, and provide handlers for the object lifecycle. </p>
-    <ul>
-        <li>__cmp__(self, other)
-        <li>__eq__(self, other)
-        <li>__add__(self, other)
-    </ul>
-    <p>Also, __call__, __str__, __repr__, __sizeof__, __setattr__, __getattr__, __len__, __iter__, __contains__, __lshift__, __rshift__, __xor__, __div__, __enter__, __exit__, and my personal favorite __rxor__(self,other)...... </p>
-    <p>The list is really long, it's mostly important to get a flavor of how they are used in Python so you can find and implement the right one when you need it.  See <a href="http://www.rafekettler.com/magicmethods.html">http://www.rafekettler.com/magicmethods.html</a> for more</p>
-</section> -->
+<section class="slide">
+<h2>It can be consfusing</h2>
+<p>You've probably heard about all of these at some point:</p>
+<ul>
+    <li>__getattr__</li>
+    <li>__setattr__</li>
+    <li>__getattribute__</li>
+    <li>__get__</li>
+    <li>__set__</li>
+</ul>
+<p>Let's look at this more and get a better understanding</p>
 
+<p>NOTE: we will not be looking at class attribute lookups -- those work with metaclasses ( more on that later )</p> 
+</section>
+
+<section class="slide">
+<h2>Attribute Storage</h2>
+<p>Python classes and class instances ( objects ) hold attributes in dictionaries</p>
+<p>Class and object dictionaries hold different information</p>
+<p>look at /examples/magic_methods/object_attribute_lookups.py</p>
+<pre><code>
+In [2]: c = Container1()
+
+In [3]: c.__dict__
+Out[3]: {'name': 'parent'}
+
+In [4]: c = Container2()
+
+In [5]: c.__dict__
+Out[5]: {'_name': 'parent'}
+
+In [6]: Container2.__dict__
+Out[6]: {  
+... other attributes ...,
+'name': property at 0x7fa9d4b11f70 
+}
+</code></pre>
+<p>Why does the attribute "name" appear in the Class dictionary in one case and on the instance dictionary in another?</p>
+</section>
+
+<section class="slide">
+<h2>Descriptors</h2>
+<p>Properties affect where an attribute is stored and how it is bound to the class</p>
+<p>They are technically called <a href="https://docs.python.org/2/howto/descriptor.html">descriptors</a></p>
+<p>A descriptor is an object which implements certain magic methods in the descriptor protocol to affect binding behavior. Those methods are:</p>
+<ul> 
+<li>__get__()</li>
+<li> __set__()</li>
+<li>__delete__()</li>
+</ul>
+<p>They are the mechanism behind properties, methods, static methods, class methods</p>
+</section>
+
+<section class="slide">
+<h2>Data and Non-Data Descriptors</h2>
+<p>There are two kinds of descriptors:</p>
+<ol>
+<li><p>Data descriptors implement the __get__ and __set__ methods</p>
+<p>Properties are a data descriptor. They have many forms. See /examples/magic_methods/name_descriptor.py</p></li>
+<li><p>Non-data descriptors only implement the __get__ method</p>
+<p>All functions and class methods are non-data descriptors</p></li>
+</ol>
+</section>
+
+<section class="slide">
+<h2>Attribute Lookup Workflow</h2>
+<p>There are two magic methods that handle attribute lookups. They can be overriden:</p>
+<ol>
+<li>__getattribute__
+<p>will be called for every dot-operator lookup that happens on your class instance</p></li>
+<li>__getattr__
+<p>if __getattribute__ can't find it, then __getattr__ will be called</p></li>
+</ol>
+<p>NOTE: beware of infinite loops!</p>
+</section>
+
+<section class="slide">
+<h2>__getattribute__ does a lot</h2>
+<p>What is the resolution workflow of __getattribute__?</p>
+<pre><code>
+if attrname in klass.__dict__.keys():
+    if hasattr( klass.__dict__[attrname], '__get__' ) and hasattr( klass.__dict__[attrname], '__set__' ):
+        return klass.__dict__[attrname].__get__( instance, klass )
+
+if attrname in instance.__dict__.keys():
+    return instance.__dict__[attrname]
+
+if attrname in klass.__dict__.keys():
+    if hasattr( klass.__dict__[attrname], '__get__' ):
+        return klass.__dict__[attrname].__get__( instance, klass )
+    else:
+        return klass.__dict__[attrname]
+
+return klass.__getattr__( attrname )
+</code></pre>
+<p>Notice it's checking for descriptors in the lookup workflow? That's interesting.</p>
+<p>let's look at examples/magic_methods/object_attribute_lookups.py</p>
+</section>
+
+
+<!--METACLASS START-->
 <section class="slide">
     <h2>A class is just an object</h2>
     <p>Objects get created from classes.  So what is the class of a class?</h2>
