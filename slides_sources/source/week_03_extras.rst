@@ -12,6 +12,8 @@ Django Generator Examples
 =============================================
 
 .. rst-class:: left
+    
+    We saw examples of generators being used in the Django project:
 
     1. Looping over GDAL/OGR `features <https://github.com/django/django/blob/db77915c9fd35a203edd8206f702ee4082f04d4a/django/contrib/gis/gdal/feature.py#L50-L53>`_
 
