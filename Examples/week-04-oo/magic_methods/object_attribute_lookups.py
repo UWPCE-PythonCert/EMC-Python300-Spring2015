@@ -24,7 +24,7 @@ class Container2( object ):
 
     #
     # the above decorator form
-    # could be converted to the following form too
+    # is equivalent to the following form too
     #
     """
     def get_name(self): return self._name
