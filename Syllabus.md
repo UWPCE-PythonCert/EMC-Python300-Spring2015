@@ -91,7 +91,6 @@ May 26th
 - Databases (DB-API w/ sqlite, NoSQL)
 - Advanced OO:
   - super(), \__new__()
-  - type, metaclasses
 
 
 ### Week 5
@@ -110,6 +109,8 @@ June 9th
 - functools
 - itertools
 - Beautiful idiomatic code
+- Advanced OO:
+  - type, metaclasses
 
 
 ### Week 7

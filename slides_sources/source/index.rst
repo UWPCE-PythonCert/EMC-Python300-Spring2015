@@ -61,5 +61,3 @@ Week 4
 
     - super(), \__new__()
 
-    - type, metaclasses
-
