@@ -6,7 +6,7 @@ class A(object):
         super(A, self).__init__(arg)
 
     def duckduck(self):
-        super(A, self).duck()
+        super(A, self).duckduck()
 
 class B(object):
     def __init__(self, arg):
@@ -22,7 +22,7 @@ class C(A):
         super(C, self).__init__(arg)
 
     def duckduck(self):
-        super(C, self).duck()
+        super(C, self).duckduck()
 
 class D(B):
     def __init__(self, arg):
@@ -37,7 +37,7 @@ class E(C,D):
         super(E, self).__init__(arg)
 
     def duckduck(self):
-        super(E, self).duck()
+        super(E, self).duckduck()
 
 if __name__ == '__main__':
 

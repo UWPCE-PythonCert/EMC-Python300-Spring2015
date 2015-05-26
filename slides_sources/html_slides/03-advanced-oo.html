@@ -177,7 +177,7 @@ cs = ColoredShape(color='red', shapename='circle')
     <p>Classic classes maintain their original method resolution order, depth first and then left to right.</p>
     <p>In simple cases, this will be a good approximation.
     <p>In general, children precede their parents and the order of appearance in __bases__ is respected.
-    <p>See examples/logging_dict.py</p>
+    <!--<p>See examples/logging_dict.py</p>-->
     <p>
         <a target="_blank" href="http://www.python.org/download/releases/2.3/mro/">http://www.python.org/download/releases/2.3/mro/</a>
     </p>
@@ -230,14 +230,16 @@ class C(A,B): pass</code></pre>
 
 <section class="slide">
 <h2>super() Tricks and Trapdoors</h2>
-<p>super() delegates calls to next base in __mro__</p>
+<ol>
+<li>super() delegates calls to next base in __mro__
 <p><a href="">see /examples/week-03-oo/super/super_delegation.py</a>
-<p>argument matching with super() methods will bite you</p>
+<li>argument matching with super() methods will bite you
 <p><a href="">see /examples/week-03-oo/super/super_arg_confusion.py</a>
-<p>last ancestor in inheritance tree should swallow some methods</p>
+<li>last ancestor in inheritance tree should swallow some methods
 <p><a href="">see /examples/week-03-oo/super/super_last_ancestor_problem.py</a>
-<p>all overriden methods *must* use super()</p>
+<li>all overriden methods *must* use super()
 <p><a href="">see /examples/week-03-oo/super/super_must_use_super.py</a>
+</ol>
 </section>
 
 <section class="slide">
@@ -315,10 +317,11 @@ class MyClass(Mixin2, Mixin1, BaseClass):
 <section class="slide">
 <h2>When would you need to use it</h2>
 
-<p>
-subclassing an immutable type:
-It’s too late to change it once you get to __init__
-<p>When __init__ is not called, for instance when unpickling (examples/unpickle.py)
+<ol>
+<li>Subclassing an immutable type:
+it’s too late to change it once you get to __init__ ( <a href="https://github.com/django/django/blob/4e65f195e1b10d83bb7edc38c908747c4fd537b8/django/utils/datastructures.py#L233-L275">example</a> )</li>
+<li>Quality checking sublcasses ( <a href="https://github.com/ansible/ansible/blob/4e854192577475bc8c75d97af0db237970508b0e/lib/ansible/module_utils/facts.py#L627-L655">example</a> )</li>
+</ol>
 
 </section>
 
@@ -333,6 +336,12 @@ It’s too late to change it once you get to __init__
 </section>
 
 <section class="slide">
+<h2>Exercise</h2>
+<p>Create a class called "LoDash" that sublasses the immutable "str" type</p>
+<p>When new "LoDash" instances are created any underscores ( _ ) with be substituted with string value of your choice</p>
+</section>
+
+<section class="slide">
     <h2>Magic Methods</h2>
     <p>They all start with and end with '__', and do things like support operators and comparisons, and provide handlers for the object lifecycle. </p>
     <ul>
@@ -344,19 +353,6 @@ It’s too late to change it once you get to __init__
     <p>The list is really long, it's mostly important to get a flavor of how they are used in Python so you can find and implement the right one when you need it.  See <a href="http://www.rafekettler.com/magicmethods.html">http://www.rafekettler.com/magicmethods.html</a> for more</p>
 </section>
 
-<section class="slide">
-<h2>Exercise</h2>
-<p>Our ConstrainedInt handles initialization for us, but doesn't handle modification of the value</p>
-<p>Develop ConstrainedInt until it passes all tests in test_constrainedint.py
-<pre><code>class ConstrainedInt(int):
-    """keeps value between 0 and 255"""
-    def __new__(cls, value):
-        value = value % 256
-        self = int.__new__(cls, value)
-        return self
-</code></pre>
-
-</section>
 
 <!-- <section class="slide">
     <h2>Magic Methods</h2>

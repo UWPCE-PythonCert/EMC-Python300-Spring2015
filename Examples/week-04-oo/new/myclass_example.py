@@ -7,3 +7,4 @@ class MyClass(object):
         instance = super( MyClass, cls ).__new__( cls, *args, **kwargs )
         instance.foo = "blah"
         return instance
+
