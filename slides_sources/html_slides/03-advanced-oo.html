@@ -445,7 +445,8 @@ Out[6]: {
 <p>What is the resolution workflow of __getattribute__?</p>
 <pre><code>
 if attrname in klass.__dict__.keys():
-    if hasattr( klass.__dict__[attrname], '__get__' ) and hasattr( klass.__dict__[attrname], '__set__' ):
+    if ( hasattr( klass.__dict__[attrname], '__get__' ) and 
+         hasattr( klass.__dict__[attrname], '__set__' ) ):
         return klass.__dict__[attrname].__get__( instance, klass )
 
 if attrname in instance.__dict__.keys():
