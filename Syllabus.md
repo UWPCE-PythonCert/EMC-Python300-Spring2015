@@ -108,9 +108,6 @@ June 9th
 
 #### Topics
 - datetime, time, pytz
-- functools
-- itertools
-- Beautiful idiomatic code
 - Advanced OO:
   - type, metaclasses
 
