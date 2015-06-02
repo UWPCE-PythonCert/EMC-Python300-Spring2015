@@ -12,7 +12,7 @@ Properties: What and Why?
 
 .. rst-class:: left
 
-    **1.** A set wrapper functions that controll access (get,set,delete) to an attribute.
+    **1.** Wrapper functions that controll access (get,set,delete) to an attribute.
 
     **2.** Provides encapsulation
 
