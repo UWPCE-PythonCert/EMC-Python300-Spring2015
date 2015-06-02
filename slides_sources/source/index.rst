@@ -61,3 +61,15 @@ Week 4
 
     - super(), \__new__()
 
+
+Week 5
+=========
+
+.. rst-class:: left
+
+  :ref:`week_05_properties`
+
+  :ref:`scipy`
+
+
+

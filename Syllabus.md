@@ -97,8 +97,10 @@ May 26th
 June 2nd
 
 #### Topics
-- numpy, scipy, pandas, matplotlib
 - ipython/notebook
+- numpy and scipy
+    - matplotlib
+    - panda
 
 
 ### Week 6
