@@ -1,4 +1,4 @@
-class Name(object):
+class Attr(object):
     def __init__(self,val):
         self.value = val
 
@@ -17,7 +17,11 @@ class Name(object):
 class Form3(object):
 
     def __init__( self, name ):
-        self.__class__.name = Name( name )
+        self.__class__.name = Attr( name )
+        #
+        # NOTE: the instance attribute of the same name
+        # is never called because it has less precedence
+        #
         self.__dict__['name'] = 'BOOM!'
 
     
