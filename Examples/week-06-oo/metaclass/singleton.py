@@ -5,8 +5,7 @@ class Singleton(type):
 
     def __call__(cls,*args,**kw):
         #
-        #  this runs the first 
-        #  time MyClass() constructor is invoked
+        #  runs when MyClass() constructor is invoked
         #  it is called before the MyClass
         #  __new__ and __init__
         #
