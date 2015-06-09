@@ -72,4 +72,15 @@ Week 5
   :ref:`scipy`
 
 
+Week 6
+=========
+
+.. rst-class:: left
+
+  `Metaclasses <html_slides/06-metaclasses.html>`_
+
+  `XML <html_slides/xml/index.html>`_
+  
+  .. `datetime <html_slides/06-datetime.html>`_
+
 
