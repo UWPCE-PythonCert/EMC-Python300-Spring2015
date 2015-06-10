@@ -7,6 +7,10 @@ class FlowMeta(type):
     def __init__(cls, name, bases, attrs):
         print "__init__ metaclass"
 
+    def __call__(cls):
+        print "__call__ metaclass"
+        return super( FlowMeta, cls ).__call__(cls)
+
 
 class Flow(object):
 
@@ -20,6 +24,7 @@ class Flow(object):
         print "__init__"
 
 if __name__ == '__main__':
+    print "main..."
     f = Flow()
 
 
