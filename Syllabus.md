@@ -107,18 +107,17 @@ June 2nd
 June 9th
 
 #### Topics
-- datetime, time, pytz
+- serialization review / XML
 - Advanced OO:
   - type, metaclasses
-
+- datetime, time, pytz
 
 ### Week 7
 June 16th
 
 #### Topics
-- serialization review / XML
-- profiling
 - multi-threading/processing
+- profiling
 
 
 ### Week 8

@@ -83,4 +83,12 @@ Week 6
   
   .. `datetime <html_slides/06-datetime.html>`_
 
+Week 7
+=========
+
+.. rst-class:: left
+
+  `Threading and Multiprocessing <html_slides/07-threading-and-multiprocessing.html>`_
+ 
+
 
