@@ -4,13 +4,13 @@ lock = threading.Lock()
 
 def f():
     # toggle
-    lock.acquire()
+    #lock.acquire()
     print "%s got lock" % threading.current_thread().name
     time.sleep(1)
     print "Done sleeping"
-    lock.release()
+    #lock.release()
 
-for n in range(10):
+for n in range(25):
     threading.Thread(target=f).start()
 
 

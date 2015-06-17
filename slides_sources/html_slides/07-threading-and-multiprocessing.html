@@ -50,12 +50,12 @@
 
       <section class="slide">
           <h2>Motivations for concurrency</h2>
-          <p>Leverage the advances in hardward, such as multi core CPUs:</p>
+          <p>Leverage the advances in hardware such as multi core CPUs:</p>
           <ul>
               <li>Increase performance and responsiveness
                   <ul>
                       <li>Webservers
-                      <li>Intensive calculations
+                      <li>Intense computations
                   </ul>
               <li>Design Choices:
                   <ul>
@@ -107,7 +107,6 @@
           <p>These threads share the memory and the state of the process. This allows multiple threads access to data in the same scope.
           <p>Python threads are true OS level threads</p>
           <p>Threads can not gain the performance advantage of multiple processors due to the Global Interpreter Lock (GIL)</p>
-          <p>But the GIL is released during IO, allowing IO bound processes to benefit from threading</p>
 
 
       </section>
@@ -117,12 +116,8 @@
           <h3>Global Interpreter Lock</h3>
           <p>This is a lock which must be obtained by each thread before it can execute, ensuring thread safety</p>
           <img width="100%" src="images/gil.png" />
-          <p>The GIL is released during IO operations, so threads which spend time waiting on network or disk access can
-          enjoy performance gains</p>
-          <p>Some alternative Python implementations such as Jython and IronPython have no GIL
-          <p>cPython and PyPy have one
-          <p>Launch multiple processes to speed up CPU bound operations.  Luckily, this is easy with the multiprocessing module.</p>
-
+          <p>Remember, this is an implementation detail. Some alternative Python implementations such as Jython and IronPython have no GIL. cPython and PyPy have the GIL
+          <p>The GIL is released during IO operations allowing IO bound processes to benefit from threading</p> 
           <ul>
               <li><a target="_blank" href="http://wiki.python.org/moin/GlobalInterpreterLock">http://wiki.python.org/moin/GlobalInterpreterLock</a></li>
               <li><a target="_blank" href="http://docs.python.org/2/c-api/init.html#threads">http://docs.python.org/2/c-api/init.html#threads</a></li>

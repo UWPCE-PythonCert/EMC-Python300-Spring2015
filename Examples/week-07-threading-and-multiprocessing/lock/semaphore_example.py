@@ -30,9 +30,10 @@ def f(s, pool):
         time.sleep(0.5)
         pool.makeInactive(name)
 
+# NOTE: second cm, sem(1)
 if __name__ == '__main__':
     pool = ThreadPool()
-    s = threading.Semaphore(1)
+    s = threading.Semaphore(3)
     for i in range(10):
         t = threading.Thread(target=f, name='thread_'+str(i), args=(s, pool))
         t.start()

@@ -7,7 +7,7 @@ x = 0
 def func():
     global x
     y = x # read
-    y += 1 # update
+    y += 1 # read, update
     x = y # write
 
 threads = []
@@ -16,7 +16,7 @@ threads = []
 # there's sufficient overhead 
 # to cause a race condition
 #
-for i in xrange(10):
+for i in xrange(1000):
     thread = threading.Thread(target=func)
     threads.append(thread)
     thread.start()

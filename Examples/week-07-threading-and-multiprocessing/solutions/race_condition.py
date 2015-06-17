@@ -19,7 +19,7 @@ def func():
 # to cause a race condition
 #
 threads = []
-for i in xrange(100000):
+for i in xrange(1000):
     thread = threading.Thread(target=func)
     threads.append(thread)
     thread.start()
