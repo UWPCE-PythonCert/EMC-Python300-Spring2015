@@ -14,7 +14,7 @@ In This Course
 
 Notes that aren't specific to a particular lecture:
 
-:ref:`extensions`
+:ref:`BuildingExtensions`
 
 Week 1
 ===========
