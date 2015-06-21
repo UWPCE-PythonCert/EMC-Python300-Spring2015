@@ -12,9 +12,13 @@ In This Course
 
   https://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-Notes that aren't specific to a particular lecture:
 
-:ref:`BuildingExtensions`
+.. rst-class:: left credit
+
+  Notes that aren't specific to a particular lecture:
+
+  :ref:`building_extensions`
+
 
 Week 1
 ===========
