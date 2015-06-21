@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=1024, user-scalable=no">
+
+  <title>Python300 Week 06 : C Extensions</title>
+
+  <!-- Required stylesheet -->
+  <link rel="stylesheet" media="screen" href="core/deck.core.css">
+
+  <!-- Extension CSS files go here. Remove or add as needed. -->
+  <link rel="stylesheet" media="screen" href="extensions/goto/deck.goto.css">
+  <link rel="stylesheet" media="screen" href="extensions/menu/deck.menu.css">
+  <link rel="stylesheet" media="screen" href="extensions/navigation/deck.navigation.css">
+  <link rel="stylesheet" media="screen" href="extensions/status/deck.status.css">
+  <link rel="stylesheet" media="screen" href="extensions/scale/deck.scale.css">
+
+  <!-- Style theme. More available in /themes/style/ or create your own. -->
+  <link rel="stylesheet" media="screen" href="themes/style/swiss.css">
+  <!-- Transition theme. More available in /themes/transition/ or create your own. -->
+  <link rel="stylesheet" media="screen" href="themes/transition/horizontal-slide.css">
+
+  <!-- Basic black and white print styles -->
+  <link rel="stylesheet" media="print" href="core/print.css">
+
+  <!-- Required Modernizr file -->
+  <script src="modernizr.custom.js"></script>
+</head>
+<body>
+  <div class="deck-container">
+
+    <!-- Begin slides. Just make elements with a class of slide. -->
+    <section class="slide">
+        <h2>System Development with Python</h2>
+        <h3>Week 6 :: C Extensions</h3>
+</section>
+
+
+<section class="slide">
+    <h2>C extensions in Python</h2>
+    <h3>Today's topics</h3>
+    <ul>
+        <li>Motivation and options</li>
+        <li>Extension modules (C API)</li>
+        <li>SWIG</li>
+        <li>ctypes</li>
+        <li>cython</li>
+        <li>others..</li>
+    </ul>
+</section>
+
+<section class="slide">
+    <h2>Motivations for exiting pure Python</h2>
+    <ul>
+        <li>Performance
+        <li>Integration with existing C libraries
+        <li>Working as a glue language
+        <li>Implement new builtin types
+        <li>Python Community -- Social Coding
+        <li>Just Because...
+    </ul>
+
+</section>
+
+<section class="slide">
+    <h2>Packaging your code</h2>
+    <p>Before we start building extensions, a quick review of building and packaging Python modules with distutils
+
+</section>
+
+<section class="slide">
+    <h2>Packaging with Distutils</h2>
+        <p>write a setup.py script
+<pre><code>from distutils.core import setup
+
+setup(
+    name='add',
+    version='1.0',
+    description='Test description',
+    ext_modules=[],
+    py_modules=['add'],
+)</code></pre>
+<pre>
+<code>python setup.py build_ext [--inplace]</code>
+</pre><pre>
+<code>python setup.py install</code>
+</pre>
+</ul>
+</section>
+
+<section class="slide">
+    <h2>Example code used today</h2>
+    <p>To keep focus on the integration tools, we're going to focus on integrating the following add() function into our Python application</p>
+<pre><code>
+#include &lt;stdio.h&gt;
+
+int add(int x, int y) {
+    return x+y;
+}
+
+int main(void) {
+    int w = 0;
+    int q = 2;
+    printf("test\n");
+    printf("%d", add(w,q));
+}
+</code></pre>
+
+</section>
+
+<section class="slide">
+    <h2>The pure C code</h2>
+
+        <p>examples/pure-c you'll find a Makefile containing:
+<pre><code>all: add; gcc -o add add.c</code></pre>
+        <p>Now compile it:
+        <p><code>% make</code>
+        <p>And run it:
+        <p><code>./add</code>
+        <p><pre> 3 + 2 = 5</pre>
+    </ul>
+</section>
+
+
+<section class="slide">
+    <h2>The C API</h2>
+    <p>Write your function in pure C using the Python API and import it into Python</p>
+    <ul>
+        <li>Good for integrating with C library functions and system calls
+        <li>The API isn't trivial to learn
+        <li>Lots of opportunity for error, for instance you must do manual reference counting (<a target="_blank" href="http://docs.python.org/2/c-api/refcounting.html">http://docs.python.org/2/c-api/refcounting.html</a>)
+        <li>Good reference code is available in the <a target="_blank" href="http://hg.python.org/cpython/file/2145593d108d">CPython source code</a>
+
+    </ul>
+    <p>Further reading</p>
+    <ul>
+        <li><a target="_blank" href="http://docs.python.org/2/extending/extending.html">http://docs.python.org/2/extending/extending.html</a>
+    </ul>
+</section>
+
+<section class="slide">
+    <h2>Intro to the C API</h2>
+    <p>You may need to install a Python dev package on your system through your package manager
+    <p>Pull in the Python API to your C code via
+<pre><code>
+#include &lt;Python.h&gt;
+/*
+Note: Since Python may define some pre-processor definitions which affect the standard headers on some systems, you must include Python.h before any standard headers are included.
+
+stdio.h, string.h, errno.h, and stdlib.h are included for you.
+*/
+</code></pre>
+</section>
+<section class="slide">
+    <h2>Intro to the C API</h2>
+    <p>Python isn't concerned with the type of arguments passed to a function, but C is
+    <p>So function arguments must be parsed on the way in and the way out
+    <p>On the way in, we can call PyArg_ParseTuple to parse the function arguments
+<pre><code>if (!PyArg_ParseTuple(args, "s", &amp;var1, ...))
+    return NULL;</code></pre>
+    <p><a target="_blank" href="http://docs.python.org/2/c-api/arg.html#PyArg_ParseTuple">http://docs.python.org/2/c-api/arg.html#PyArg_ParseTuple</a>
+
+    <p>On the way out, we can call Py_BuildValue
+<pre><code>
+PyObject* Py_BuildValue(const char *format, ...)
+</code></pre>
+    <p><a target="_blank" href="https://docs.python.org/2/c-api/arg.html#c.Py_BuildValue">https://docs.python.org/2/c-api/arg.html#c.Py_BuildValue</a>
+
+
+</section>
+
+<section class="slide">
+    <h2>Registering your functions</h2>
+    <p>First, register the name and address of your function in the method table
+<pre><code>static PyMethodDef AddMethods[] = {
+    {"add", add, METH_VARARGS, "add two numbers"},
+    {NULL, NULL, 0, NULL}
+};
+</code></pre>
+<p>That second record is a required <a target="blank" href="http://en.wikipedia.org/wiki/Sentinel_value">Sentinel value</a>
+    <p><a target="_blank" href="http://docs.python.org/2/c-api/structures.html#PyMethodDef">http://docs.python.org/2/c-api/structures.html#PyMethodDef</a>
+    <p>Now you're ready to initialize the creation of Python function
+<pre><code>
+PyMODINIT_FUNC
+initadd(void) {
+    // Module's initialization function
+    // Will be called again if you use Python's reload()
+    (void) Py_InitModule("add", AddMethods);
+}</code></pre>
+
+</section>
+
+<section class="slide">
+<h2>Our add method, ready to import in Python</h2>
+<pre><code>#include &lt;Python.h&gt;
+
+static PyObject *
+add(PyObject *self, PyObject *args)
+{
+    int x;
+    int y;
+    int return_value;
+    if (!PyArg_ParseTuple(args, "ii", &amp;x, &amp;y))
+        return NULL;
+    return_value = x+y;
+    return Py_BuildValue("i", return_value);
+}
+static PyMethodDef AddMethods[] = {
+    {"add", add, METH_VARARGS, "add two numbers"},
+    {NULL, NULL, 0, NULL}
+};
+void initadd(void) {
+    PyImport_AddModule("add");
+    Py_InitModule("add", AddMethods);
+}
+</code></pre>
+</section>
+
+<section class="slide">
+    <h2>add / C-API</h2>
+    <p>Now let's build our module with distutils
+    <p>Simple compilation details are handled by distutils
+    <p>
+<pre><code>python setup.py build_ext --inplace</code></pre>
+<p>Or to install into your virtualenv:
+<pre><code>python setup.py install</code></pre>
+
+    <p>Now you can "import add; add.add(2,4)" from your Python code
+    <p>Try it now
+</section>
+<section class="slide">
+    <h2>Exercise</h2>
+    <p>Try modifying the C code:
+    <ul>
+        <li>Change input and output values to floating point numbers (hint: check the format options for <a target="_blank" href="https://docs.python.org/2/c-api/arg.html#parsing-arguments-and-building-values">PyArg_ParseTuple</a>)
+        <li>verify that your changes to the C code are working properly in your Python code
+    </ul>
+</section>
+
+<section class="slide">
+
+    <h2>Exception handling</h2>
+    <p>Major errors in your C code won't magically turn into Python exceptions
+    <p>You have to detect error conditions and call the proper functions
+    <p>there is a global indicator (per thread) of the last error that occurred. Most functions don’t clear this on success, but will set it to indicate the cause of the error on failure.
+    <p>Most functions also return an error indicator, usually NULL if they are supposed to return a pointer, or -1 if they return an integer (exception: the PyArg_*() functions return 1 for success and 0 for failure)
+    <p>The easy way to set this indicator is with PyErr_SetString
+    <p><a target="_blank" href="http://docs.python.org/2/c-api/exceptions.html">http://docs.python.org/2/c-api/exceptions.html</a>
+</section>
+
+<section class="slide">
+    <h2>Exercise</h2>
+    <p>Find the divide module in the examples/c-api directory
+    <p>What happens when you call divide.divide(1/0)?
+    <p>This is a different result than a pure Python 1/0, which throws an exception
+    <p>Change the divide method to throw an appropriate exception in the divide-by-zero case
+    <p>Hint: detect the error condition, call PyErr_SetString(PyExc_ZeroDivisionError, "DIVIDE BY ZERO ERROR"), and return NULL
+
+</section>
+
+<section class="slide">
+    <h2>SWIG</h2>
+    <h3>Simple Wrapper Interface and Generator</h3>
+    <p>A language agnostic tool for integrating C/C++ code with high level languages</p>
+    <p>Advantages
+    <ul>
+        <li>Provides code generation for languages other than Python
+        <li>Doesn't require modification to your C source
+    </ul>
+    <h4>Language interfaces</h4>
+    <ul>
+        <li>Python
+        <li>Tcl
+        <li>Perl
+        <li>Guile (Scheme/Lisp)
+        <li>Java
+        <li>Ruby
+        <li>and a bunch of others <a target="_blank" href="http://www.swig.org/compat.html#SupportedLanguages">http://www.swig.org/compat.html#SupportedLanguages</a>
+    </ul>
+    <p>Further reading</p>
+    <ul>
+        <li><a target="_blank" href="http://www.swig.org/Doc1.3/Python.html">http://www.swig.org/Doc1.3/Python.html</a>
+    </ul>
+</section>
+
+<section class="slide">
+    <h2>SWIGifying add()</h2>
+    <p>SWIG doesn't require modification to your C source code
+    <p>The language interface is defined by an "interface file", usually with a suffix of .i
+    <p>From there, SWIG can generate interfaces for the languages it supports
+    <p>The interface file contains ANSI C prototypes and variable declarations
+    <p>The %module directive defines the name of the module that will be created by SWIG
+    <p>To create a SWIG wrapper:
+    <p>
+    <ul>
+        <li>create add.i
+        <li>create distutils setup.py
+        <li>python setup.py build_ext <!-- --inplace -->
+    </ul>
+<h4>run it!</h4>
+<pre><code>python -c 'import add;print add.add(4,5)'</code></pre>
+<p>
+<a target="_blank" href="http://www.swig.org/Doc2.0/SWIGDocumentation.html#Introduction_nn5">http://www.swig.org/Doc2.0/SWIGDocumentation.html#Introduction_nn5</a>
+</section>
+
+<section class="slide">
+    <h2>SWIGifying add(), not just for Python</h2>
+    <p>SWIG will create interfaces for all supported languages</p>
+    <ul>
+        <li>create extconf.rb
+        <li><code>ruby extconf.rb</code>
+        <li><code>swig -ruby add.i</code>
+        <li><code>make</code>
+        <li><code>ruby -I. -e 'require "add"; print Add.add(5,6).to_s + "\n"'</code>
+    </ul>
+    <p>Further reading</p>
+    <ul>
+        <li><a target="_blank" href="http://www.swig.org/Doc1.3/Ruby.html">http://www.swig.org/Doc1.3/Ruby.html</a>
+    </ul>
+</section>
+
+<section class="slide">
+    <h2>ctypes</h2>
+    <p>A foreign function interface in Python
+    <p>Binds functions in shared libraries to Python functions
+    <h3>Benefits</h3>
+    <ul>
+        <li>Ships with Python, since 2.5
+        <li>No new language to learn, it's all Python
+    </ul>
+    <h3>Drawbacks</h3>
+    <ul>
+        <li>Performance hit for on the fly type translation</li>
+    </ul>
+    </section>
+    <section class="slide">
+    <h2>Importing Dynamic Shared Libries</h2>
+    <p>Importing dynamic shared libraries is different on Windows and Unix systems, see <a target="_blank" href="https://docs.python.org/2/library/ctypes.html#loading-dynamic-link-libraries">https://docs.python.org/2/library/ctypes.html#loading-dynamic-link-libraries</a>
+<pre><code>from ctypes import *
+add = cdll.LoadLibrary("add.so")
+print add.add(3,4)</code></pre>
+    <p>Further reading</p>
+    <ul>
+        <li><a target="_blank" href="http://docs.python.org/2/library/ctypes.html">http://docs.python.org/2/library/ctypes.html</a>
+    </ul>
+</section>
+<section class="slide">
+    <h2>Calling functions with ctypes</h2>
+    <p>None, integers, longs, byte strings and unicode strings are the only native Python objects that can directly be used as parameters in these function calls.
+    <p>The rest must be wrapped in a ctypes data type
+    <p>For instance, floats can be wrapped in c_double() before handing off to ctypes
+<pre><code>printf("An int %d, a double %f\n", 1234, c_double(3.14))</code></pre>
+<p>You can allow your own classes to be passed to ctypes via the _as_parameter_ instance variable, as long as they can be resolved to an integer or string.
+<pre><code>class MyObject(object):
+    def __init__(self, number):
+        self._as_parameter_ = number
+
+obj = MyObject(32)
+printf("object value: %d\n", obj)</code></pre>
+<p>
+    <a target="_blank" href="http://docs.python.org/2/library/ctypes.html#fundamental-data-types">http://docs.python.org/2/library/ctypes.html#fundamental-data-types</a>
+</p>
+</section>
+
+<section class="slide">
+    <h2>ctypes</h2>
+    <p>Passing Python objects into C functions
+    <p>If a function expects a pointer, just wrap your Python object in byref(x)
+<pre><code>a_lib.a_function( ctypes.byref(c_float(x)))</code></pre>
+    <p>
+    <a target="_blank" href="http://docs.python.org/2/library/ctypes.html#passing-pointers-or-passing-parameters-by-reference">http://docs.python.org/2/library/ctypes.html#passing-pointers-or-passing-parameters-by-reference</a>
+    <p>For callback functions, use a factory that returns function prototypes:
+<code><pre>ctypes.CFUNCTYPE(restype, *argtypes, use_errno=False, use_last_error=False)</pre></code>
+    <p>See examples/ctypes/pointers.py and examples/ctypes/ctypes_test.py
+    <p>
+<a target="_blank" href="http://docs.python.org/2/library/ctypes.html#ctypes.CFUNCTYPE">http://docs.python.org/2/library/ctypes.html#ctypes.CFUNCTYPE</a>
+</section>
+
+<section class="slide">
+<h2>ctypes</h2>
+<p>You can define C structs by subclassing ctypes.Structure:
+<code><pre>class POINT(ctypes.Structure):
+    _fields_ = [("x", ctypes.c_int),
+             ("y", ctypes.c_int)]
+
+point = POINT(10, 20)
+print point.x, point.y
+point = POINT(y=5)
+print point.x, point.y
+</pre></code>
+</section>
+<section class="slide">
+    <h2>ctypes summary</h2>
+    <p>
+    ctypes allows you to call shared libraries:
+    <ul>
+    <li>Your own custom libs
+    <li>System libs
+    <li>Proprietary libs
+    </ul><p>Supports almost all of C:
+    <ul><li>Custom data types, structs, unions, pointers, callbacks
+    </ul><p>Upside:
+    <ul><li>You can call system libs with little code
+    <li>You don’t need to compile anything
+    <li>at least for system and pre-compiled libs
+    </ul><p>Downsides:
+    <ul><li>You need to specify the interface
+    <li>and it is NOT checked for you!
+    <li>Translation is done on the fly at run time
+    <li>performance considerations
+    </ul>
+
+</section>
+
+<section class="slide">
+    <h2>ctypes exercise</h2>
+    <p>
+In examples/ctypes you’ll find add.c
+    <p>
+
+You can build a shared lib with it with make
+    <p>
+
+ctypes_test.py will call that shared library, and a few system library functions.
+    <p>
+
+Take a look at what’s there, and how it works.
+<p>
+add another function, divide, to add.c, that accepts and returns floats
+    <p>
+rebuild, and call it with ctypes<!--
+    <p>
+Try calling other system functions with ctypes. -->
+</section>
+
+<section class="slide">
+    <h2>Cython</h2>
+    <p>Cython code is Python with a few extra keywords
+    <p>Allows definition of static types
+    <p>Cython compiles down to Python extensions written in C</p>
+    <p>To type a variable, just add the cdef keyword:
+<pre><code>def add(int x, int y):
+    cdef int result=0
+    result = x + y
+    return result</code></pre>
+
+    <p>The allowed types are defined <a target="_blank" href="http://docs.cython.org/src/userguide/language_basics.html#language-basics">here</a>
+    <p>Further reading</p>
+    <ul>
+        <li><a target="_blank" href="http://www.cython.org/">http://www.cython.org/</a>
+        <li><a target="_blank" href="http://docs.cython.org/">http://docs.cython.org/</a>
+    </ul>
+
+</section>
+
+<section class="slide">
+    <h2>Developing with Cython</h2>
+    <p>first, install cython with "pip install cython"</p>
+    <p>Cython files end in the .pyx extension
+    <p>Cython functions can be declared two ways:
+        <ul>
+        <li>def foo  # callable from Python
+        <li>cdef foo  # only callable from Cython/C
+        </ul>
+    <p>Once your .pyx file is created, it is converted to C via
+<pre><code>cython cy_add.pyx</code></pre>
+    <p>Generate "annoted" C code in HTML
+<pre><code>cython -a cy_add.pyx</code></pre>
+</section>
+<section class="slide">
+    <h2>Building Cython extensions with distutils</h2>
+    <p>Building your Python extension with distutils is similar to before, but use 'cythonize'
+
+<pre><code>from distutils.core import setup
+from Cython.Build import cythonize
+
+setup(name = "cython_example",
+      ext_modules = cythonize(['cy_add1.pyx',])
+   )</code></pre>
+<p>Then you're ready to build:
+<pre><code>python setup.py build_ext [--inplace]</code></pre>
+<p>See examples/cython/setup.py
+
+</section>
+
+<section class="slide">
+    <h2>Adding types</h2>
+<code><pre>cdef int i
+def double dx
+</pre></code>
+<p>Now i and dx are statically typed. Do this for variables which are heavily used and profiling
+has shown you that they are expensive.
+<p>Typing everything in sight will not necessarily improve performance.  It may even harm it, as there may be unnecessary type checks or conversions
+
+</section>
+
+<section class="slide">
+    <h2>Cython can compile pure Python code to C to provide a performance improvement</h2>
+    <p>Consider a more expensive numerical integration function</p>
+    <img src="img/num_integ_c.gif">
+    </section>
+    <section class="slide">
+    <h2>Numerical Integration</h2>
+<pre>
+<code>def f(x):
+    return x**2
+
+def integrate(f, a, b, N):
+    s = 0
+    dx = (b-a)/N
+    for i in range(N):
+        s += f(a+i*dx)
+    return s * dx
+</code>
+</pre>
+<p>For example, integrating this function from 0 to 10 results in 333.333...
+<p>This is a good candidate for Cython – an essentially static function called a lot.
+
+<p><a target="_blank" href="http://www.wolframalpha.com/input/?i=integrate+x**2+from+0+to+10">http://www.wolframalpha.com/input/?i=integrate+x**2+from+0+to+10</a>
+</section>
+
+<section class="slide">
+    <h2>Improvements with static typing</h2>
+    <p>Find the integrate code in examples/cython/integrate
+    <p>Build it as usual and test with integrate_main.py
+    <ul>
+        <li>Convert the dynamically typed variables to static types and measure performance improvement before and after
+        <li>Can static types and dynamic types be mixed?
+        <li>Check the performance in converting the function type to static (<a target="_blank" href="http://docs.cython.org/src/quickstart/cythonize.html#typing-functions">see here</a>)
+        <li>Use cython -a to compare the generated C code in all cases
+    </ul>
+
+</section>
+
+<section class="slide">
+<h2>Calling external functions with Cython</h2>
+
+<p>You can tell Cython about external functions you want to call with 'cdef extern':
+<code><pre># distutils: sources = add.c
+# This tells cythonize that you need that c file.
+
+# telling cython what the function we want to call looks like.
+cdef extern from "add.h":
+    # pull in C add function, renaming to c_add for Cython
+    int c_add "add" (int x, int y)
+
+def add(x, y):
+    # now that cython knows about it -- we can just call it.
+    return c_add(x, y)</pre></code>
+
+
+</section>
+
+<section class="slide">
+    <h2>Even more ways to work in C</h2>
+    <p>There are several other ways to work with C code. We'll say a passing hello to them.
+</section>
+
+<section class="slide">
+    <h2>Pyrex</h2>
+    <p><a target="_blank" href="http://wiki.python.org/moin/Pyrex">http://wiki.python.org/moin/Pyrex</a></p>
+    <p>Superceded by Cython</p>
+</section>
+
+<section class="slide">
+<h2><a target="_blank" href="https://pypi.python.org/pypi/xdress/0.3">XDress</a></h2>
+<p>Cython-based, NumPy-aware automatic wrapper generation for C / C++</p>
+<p>
+ Currently, xdress may generate Python bindings (via Cython) for C++ classes and functions and in-memory wrappers for C++ standard library containers (sets, vectors, maps). In the future, other tools and bindings will be supported.
+</section>
+
+<section class="slide">
+    <h2>SIP</h2>
+    <ul>
+        <li>Takes a specification file and generates the necessary C++ and Python modules
+        <li>Used to support large libraries like PyQT
+    </ul>
+    <p><a target="_blank" href="http://wiki.python.org/moin/SIP">http://wiki.python.org/moin/SIP</a>
+</section>
+
+<section class="slide">
+    <h2>Boost.Python</h2>
+    <p><a target="_blank" href="http://www.boost.org/doc/libs/1_41_0/libs/python/doc/index.html">http://www.boost.org/doc/libs/1_41_0/libs/python/doc/index.html</a></p>
+    <p>A C++ library which interfaces Python and C++</p>
+    <p>Wraps C++ functions in BOOST wrappers, compiled with your regular C++ compiler</p>
+</section>
+
+<section class="slide">
+    <h2>shedskin</h2>
+    <p><a target="_blank" href="https://code.google.com/p/shedskin/">https://code.google.com/p/shedskin/</a></p>
+    <p>A pure python compiler that makes type assumptions based on type inference</p>
+    <p>Experimental, but growing</p>
+</section>
+
+<section class="slide">
+    <h2>A few others</h2>
+    <p><a target="_blank" href="http://wiki.python.org/moin/IntegratingPythonWithOtherLanguages">http://wiki.python.org/moin/IntegratingPythonWithOtherLanguages</a></p>
+</section>
+
+<section class="slide">
+<h2>Choosing one of the methods</h2>
+<p>Are you calling a few system library calls? - ctypes
+<p>Want your code to be included in the standard CPython library? - CPython API
+<p>Do you have a really big library to wrap?
+<p>use a wrapper generator: - SWIG, XDress, ..
+<p>Are you writing extensions from scratch? - Cython
+<p>Using C++ or Boost already? - Boost-Python
+<p>Do you want a “thick” wrapper around a C/C++ lib - Cython
+<p>Want some easy speed and can use an alternative interpreter? - try <a target="blank" href="http://pypy.org/">http://pypy.org</a>
+</section>
+
+<section class="slide">
+    <h1>Questions?</h1>
+</section>
+
+
+
+    <!-- End slides. -->
+
+    <!-- Begin extension snippets. Add or remove as needed. -->
+
+    <!-- deck.navigation snippet -->
+    <div aria-role="navigation">
+      <a href="#" class="deck-prev-link" title="Previous">&#8592;</a>
+      <a href="#" class="deck-next-link" title="Next">&#8594;</a>
+    </div>
+
+    <!-- deck.status snippet -->
+    <p class="deck-status" aria-role="status">
+      <span class="deck-status-current"></span>
+      /
+      <span class="deck-status-total"></span>
+    </p>
+
+    <!-- deck.goto snippet -->
+    <form action="." method="get" class="goto-form">
+      <label for="goto-slide">Go to slide:</label>
+      <input type="text" name="slidenum" f="goto-slide" list="goto-datalist">
+      <datalist id="goto-datalist"></datalist>
+      <input type="submit" value="Go">
+    </form>
+
+    <!-- End extension snippets. -->
+  </div>
+
+<!-- Required JS files. -->
+<script src="jquery.min.js"></script>
+<script src="core/deck.core.js"></script>
+
+<!-- Extension JS files. Add or remove as needed. -->
+<script src="extensions/menu/deck.menu.js"></script>
+<script src="extensions/goto/deck.goto.js"></script>
+<script src="extensions/status/deck.status.js"></script>
+<script src="extensions/navigation/deck.navigation.js"></script>
+<script src="extensions/scale/deck.scale.js"></script>
+
+<!-- Initialize the deck. You can put this in an external file if desired. -->
+<script>
+  $(function() {
+    $.deck('.slide');
+  });
+</script>
+</body>
+</html>

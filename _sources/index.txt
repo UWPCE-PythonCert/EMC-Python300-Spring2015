@@ -12,6 +12,9 @@ In This Course
 
   https://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+Notes that aren't specific to a particular lecture:
+
+:ref:`building_extensions`
 
 Week 1
 ===========
@@ -91,4 +94,10 @@ Week 7
   `Threading and Multiprocessing <html_slides/07-threading-and-multiprocessing.html>`_
  
 
+Week 8
+=========
 
+.. rst-class:: left
+
+  ..`C Extensions <html_slides/cext/index.html>`_
+ 
