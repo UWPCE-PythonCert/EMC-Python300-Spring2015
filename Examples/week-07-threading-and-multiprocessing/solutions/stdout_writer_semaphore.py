@@ -3,7 +3,7 @@ import sys
 import threading
 import time
 
-lock = threading.Semaphore(10)
+lock = threading.Semaphore(2)
 
 def write():
     # using cm

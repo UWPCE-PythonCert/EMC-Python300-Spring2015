@@ -4,7 +4,7 @@ import random
 import Queue
 
 def producer(q,aint):
-    time.sleep(random.random())
+    #time.sleep(random.random())
     print "Producer.put: %s" % aint
     q.put( aint )
 

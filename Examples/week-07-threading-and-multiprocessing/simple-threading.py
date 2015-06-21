@@ -19,11 +19,12 @@ if __name__ == '__main__':
     threads = []
     for i in xrange(3):
         thread = threading.Thread(target=func, args=())
-        thread.start()
+        thread.start() # calls Thread.run()
         threads.append(thread)
 
     for thread in threads:
         logging.debug( "join()" )
         thread.join()
 
+    logging.debug("after joining")
 
