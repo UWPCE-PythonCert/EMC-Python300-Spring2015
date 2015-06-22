@@ -73,9 +73,7 @@ If you installed python with Macports or Homebrew, it should be all set up to co
 Testing if it works:
 ======================
 
-In the ``Examples\week-08 class``, you'll find a number of samples.
-
-Go to the: ``Examples\week-08-extensions/c-api`` dir.
+In the ``Examples/week-08/c-api/add/``, you'll find a ``add.c`` file
 
 type::
 
@@ -83,9 +81,10 @@ type::
 
 This should spew out a bunch of stuff while it builds the extension, then hopefully finish without an error. On Linux and the Mac, you should get an add.so file, on Windows, an add.pyd file.
 
-Try::
 
-    py.test
+then run the test::
 
-and hopefully 3 tests will pass.
+  # requires pip install pytest
+  python test_add.py
+
 
