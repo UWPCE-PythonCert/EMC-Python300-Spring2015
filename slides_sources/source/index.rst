@@ -13,13 +13,6 @@ In This Course
   https://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 
-.. rst-class:: left credit
-
-  Notes that aren't specific to a particular lecture:
-
-  :ref:`building_extensions`
-
-
 Week 1
 ===========
 
@@ -103,5 +96,7 @@ Week 8
 
 .. rst-class:: left
 
-  ..`C Extensions <html_slides/cext/index.html>`_
+  :ref:`building_extensions`
+
+.. `C Extensions <html_slides/cext/index.html>`_
  
