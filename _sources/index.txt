@@ -98,5 +98,7 @@ Week 8
 
   :ref:`building_extensions`
 
-.. `C Extensions <html_slides/cext/index.html>`_
+  `C Extensions <html_slides/cext/index.html>`_
+
+
  
