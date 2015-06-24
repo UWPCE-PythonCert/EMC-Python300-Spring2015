@@ -2,6 +2,7 @@
 
 from ctypes import *
 
+#libc = CDLL("libc.dylib")
 libc = CDLL("libm.so")
 
 i = c_int()

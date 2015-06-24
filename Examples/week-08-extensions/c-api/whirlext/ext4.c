@@ -8,14 +8,8 @@ static PyObject *
 string_peek3(PyObject *self, PyObject *args) 
 {
    const char *pstr;
-   //PyObject* sysmod = PyImport_ImportModuleNoBlock("sys");
-   //PyObject* pystdout = PyObject_GetAttrString(sysmod, "stdout");
-   //PyObject* result = NULL;
    
    if (!PyArg_ParseTuple(args, "s:string_peek3", &pstr)) {
-      //Py_XDECREF(result);
-      //Py_XDECREF(pystdout);
-      //Py_XDECREF(sysmod);   
       return NULL;
    }
 
@@ -24,24 +18,16 @@ string_peek3(PyObject *self, PyObject *args)
    for ( i = 0; i < strlen(pstr); i++ ){
       char char_display = pstr[i];
       int char_value = pstr[i];
-      //result = PyObject_CallMethod(pystdout, "write", "c", char_display );
 
       PyObject *key = Py_BuildValue( "c", char_display );
       PyObject *value = Py_BuildValue( "i", char_value );
       if( PyDict_SetItem( charDict, key, value ) < 0 ){
           Py_XDECREF(charDict);
-          //Py_XDECREF(result);
-          //Py_XDECREF(pystdout);
-          //Py_XDECREF(sysmod);   
           return NULL;
       } 
 
    }
 
-   //Py_XDECREF(result);
-   //Py_XDECREF(pystdout);
-   //Py_XDECREF(sysmod);   
-   //Py_XDECREF(charDict);   
    return Py_BuildValue("O", charDict);
 }
 
@@ -84,8 +70,7 @@ string_peek4(PyObject *self, PyObject *args)
    Py_XDECREF(result);
    Py_XDECREF(pystdout);
    Py_XDECREF(sysmod);   
-   //return Py_BuildValue("O", charList);
-   return charList;
+   return Py_BuildValue("O", charList);
 }
 
 // Module functions table.

@@ -1,4 +1,5 @@
 #include <Python.h>
+// params and varargs, PyObject, sentinal, initfunc naming, return values for PyObject *
 
 static PyObject *
 add(PyObject *self, PyObject *args)
@@ -7,8 +8,9 @@ add(PyObject *self, PyObject *args)
     int y;
     int sts;
 
-    if (!PyArg_ParseTuple(args, "ii", &x, &y))
+    if (!PyArg_ParseTuple(args, "ii", &x, &y)) {
         return NULL;
+    }
     sts = x+y;
     return Py_BuildValue("i", sts);
 }

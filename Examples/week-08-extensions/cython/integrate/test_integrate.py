@@ -19,6 +19,7 @@ def run_test(msg):
 from integrate import integrate_f
 run_test("Pure Python version:")
 
+"""
 from cy_integrate1 import integrate_f
 run_test("First Cython version:")
 
@@ -39,4 +40,5 @@ run_test("Sixth Cython version:")
 
 from cy_integrate7 import integrate_f
 run_test("Seventh Cython version:")
+"""
 

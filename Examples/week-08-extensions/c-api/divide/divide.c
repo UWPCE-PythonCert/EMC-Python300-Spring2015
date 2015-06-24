@@ -12,6 +12,7 @@ divide(PyObject *self, PyObject *args)
     }
 
     sts = x/y;
+
     return Py_BuildValue("d", sts);
 }
 

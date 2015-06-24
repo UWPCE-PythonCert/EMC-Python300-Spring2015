@@ -5,7 +5,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="width=1024, user-scalable=no">
 
-  <title>Python300 Week 06 : C Extensions</title>
+  <title>Python300 Week 08 : C Extensions</title>
 
   <!-- Required stylesheet -->
   <link rel="stylesheet" media="screen" href="core/deck.core.css">
@@ -42,8 +42,8 @@
     <h2>C extensions in Python</h2>
     <h3>Today's topics</h3>
     <ul>
-        <li>Motivation and options</li>
-        <li>Extension modules (C API)</li>
+        <li>Motivation</li>
+        <li>Extension modules (C-API)</li>
         <li>SWIG</li>
         <li>ctypes</li>
         <li>cython</li>
@@ -53,21 +53,24 @@
 
 <section class="slide">
     <h2>Motivations for exiting pure Python</h2>
+    <p>Overall motivations:</p>
     <ul>
-        <li>Performance
+        <li>Performance, Performance, Performance
         <li>Integration with existing C libraries
         <li>Working as a glue language
-        <li>Implement new builtin types
-        <li>Python Community -- Social Coding
-        <li>Just Because...
     </ul>
 
+    <p>C-API-level motivations:</p>
+    <ul>
+        <li>Implement new builtin types</li>
+        <li>Python Community -- Social Coding
+        <li>Curiosity
+    </ul>
 </section>
 
 <section class="slide">
     <h2>Packaging your code</h2>
     <p>Before we start building extensions, a quick review of building and packaging Python modules with distutils
-
 </section>
 
 <section class="slide">
@@ -92,7 +95,7 @@ setup(
 
 <section class="slide">
     <h2>Example code used today</h2>
-    <p>To keep focus on the integration tools, we're going to focus on integrating the following add() function into our Python application</p>
+    <p>First, the obligatory simple example we'll see in different parts of the slide deck</p>
 <pre><code>
 #include &lt;stdio.h&gt;
 
@@ -111,7 +114,7 @@ int main(void) {
 </section>
 
 <section class="slide">
-    <h2>The pure C code</h2>
+    <h2>The C code</h2>
 
         <p>examples/pure-c you'll find a Makefile containing:
 <pre><code>all: add; gcc -o add add.c</code></pre>
@@ -125,24 +128,49 @@ int main(void) {
 
 
 <section class="slide">
-    <h2>The C API</h2>
-    <p>Write your function in pure C using the Python API and import it into Python</p>
+    <h2>The Python C-API</h2>
+    <p>Benefits:</p>
     <ul>
         <li>Good for integrating with C library functions and system calls
-        <li>The API isn't trivial to learn
-        <li>Lots of opportunity for error, for instance you must do manual reference counting (<a target="_blank" href="http://docs.python.org/2/c-api/refcounting.html">http://docs.python.org/2/c-api/refcounting.html</a>)
-        <li>Good reference code is available in the <a target="_blank" href="http://hg.python.org/cpython/file/2145593d108d">CPython source code</a>
-
     </ul>
-    <p>Further reading</p>
+
+    <p>Drawbacks: You will hurt yourself</p>
+    <ul>
+        <li>The C-API isn't trivial to learn
+        <li>Most of your time will be spent thinking about <a target="_blank" href="http://docs.python.org/2/c-api/refcounting.html">reference counting, borrowed vs owned PyObject references</a></li>
+        <li>Like exceptions? Nothing to see here folks</li>
+        <li>Like introspection? Keep moving</li>
+    </ul>
+    <p>Further reading:</p>
     <ul>
         <li><a target="_blank" href="http://docs.python.org/2/extending/extending.html">http://docs.python.org/2/extending/extending.html</a>
+        <li>Read the reference code in the <a target="_blank" href="https://github.com/python/cpython">CPython source</a>
+
     </ul>
 </section>
 
 <section class="slide">
-    <h2>Intro to the C API</h2>
-    <p>You may need to install a Python dev package on your system through your package manager
+    <h2>Python Functions and New Python Types</h2>
+    <p>We can arbitrarily divide the categorical things we want to build in the C-API into:</p>
+    <ol>
+        <li>Creating Python functions</li>
+        <li>Building new Python types</li>
+    </ol>
+</section>
+
+<section class="slide">
+    <h2>Create Python Functions in the C-API</h2>
+    <p>Four things we'll need:</p>
+    <ol>
+        <li>the Python header file
+        <li>our C functions that mutate data
+        <li>a function-mapping struct that defines functions to export. Effectively says, "this module exposes these functions"
+        <li>an initializer call that creates the Python function ( think of it like main )
+    </ol>
+</section>
+
+<section class="slide">
+    <h2>Create Python Functions in the C-API</h2>
     <p>Pull in the Python API to your C code via
 <pre><code>
 #include &lt;Python.h&gt;
@@ -153,43 +181,34 @@ stdio.h, string.h, errno.h, and stdlib.h are included for you.
 */
 </code></pre>
 </section>
-<section class="slide">
-    <h2>Intro to the C API</h2>
-    <p>Python isn't concerned with the type of arguments passed to a function, but C is
-    <p>So function arguments must be parsed on the way in and the way out
-    <p>On the way in, we can call PyArg_ParseTuple to parse the function arguments
-<pre><code>if (!PyArg_ParseTuple(args, "s", &amp;var1, ...))
-    return NULL;</code></pre>
-    <p><a target="_blank" href="http://docs.python.org/2/c-api/arg.html#PyArg_ParseTuple">http://docs.python.org/2/c-api/arg.html#PyArg_ParseTuple</a>
-
-    <p>On the way out, we can call Py_BuildValue
-<pre><code>
-PyObject* Py_BuildValue(const char *format, ...)
-</code></pre>
-    <p><a target="_blank" href="https://docs.python.org/2/c-api/arg.html#c.Py_BuildValue">https://docs.python.org/2/c-api/arg.html#c.Py_BuildValue</a>
-
-
-</section>
 
 <section class="slide">
     <h2>Registering your functions</h2>
     <p>First, register the name and address of your function in the method table
-<pre><code>static PyMethodDef AddMethods[] = {
+<pre><code>
+static PyMethodDef AddMethods[] = {
     {"add", add, METH_VARARGS, "add two numbers"},
     {NULL, NULL, 0, NULL}
 };
 </code></pre>
 <p>That second record is a required <a target="blank" href="http://en.wikipedia.org/wiki/Sentinel_value">Sentinel value</a>
-    <p><a target="_blank" href="http://docs.python.org/2/c-api/structures.html#PyMethodDef">http://docs.python.org/2/c-api/structures.html#PyMethodDef</a>
-    <p>Now you're ready to initialize the creation of Python function
+<p>What the heck does <a href="https://docs.python.org/2/c-api/structures.html#METH_VARARGS">METH_VARARGS</a> do?</p>
+<p>Further Reading:</p>
+<p><a target="_blank" href="http://docs.python.org/2/c-api/structures.html#PyMethodDef">http://docs.python.org/2/c-api/structures.html#PyMethodDef</a>
+</section>
+
+<section class="slide">
+    <h2>Method Initialization</h2>
+    <p>Now you're ready to create a Python function
 <pre><code>
 PyMODINIT_FUNC
-initadd(void) {
-    // Module's initialization function
-    // Will be called again if you use Python's reload()
-    (void) Py_InitModule("add", AddMethods);
-}</code></pre>
-
+initadd(void) 
+{
+    // module's initialization function
+    // will be called again if you use Python's reload()
+    Py_InitModule3("add", AddMethods, "add method module docstring" );
+}
+</code></pre>
 </section>
 
 <section class="slide">
@@ -201,25 +220,33 @@ add(PyObject *self, PyObject *args)
 {
     int x;
     int y;
-    int return_value;
-    if (!PyArg_ParseTuple(args, "ii", &amp;x, &amp;y))
+    int sts;
+
+    if (!PyArg_ParseTuple(args, "ii", &x, &y))
         return NULL;
-    return_value = x+y;
-    return Py_BuildValue("i", return_value);
+    sts = x+y;
+    return Py_BuildValue("i", sts);
 }
+
+// Module's method table and initialization function
+// see: https://docs.python.org/2/extending/extending.html#the-module-s-method-table-and-initialization-function
 static PyMethodDef AddMethods[] = {
     {"add", add, METH_VARARGS, "add two numbers"},
-    {NULL, NULL, 0, NULL}
+    {NULL, NULL, 0, NULL} // sentinel
 };
-void initadd(void) {
-    PyImport_AddModule("add");
-    Py_InitModule("add", AddMethods);
+
+
+PyMODINIT_FUNC
+initadd(void) {
+    // Module's initialization function
+    // Will be called again if you use Python's reload()
+    Py_InitModule3("add", AddMethods, "add method module docstring" );
 }
 </code></pre>
 </section>
 
 <section class="slide">
-    <h2>add / C-API</h2>
+    <h2>Build it</h2>
     <p>Now let's build our module with distutils
     <p>Simple compilation details are handled by distutils
     <p>
@@ -230,34 +257,100 @@ void initadd(void) {
     <p>Now you can "import add; add.add(2,4)" from your Python code
     <p>Try it now
 </section>
+
+<section class="slide">
+    <h2>Helper Functions for Unpacking Args</h2>
+    <p>Python isn't concerned with "types" but C is
+    <p>So function arguments must be parsed and unpacked to C types on the way in:
+<pre><code>if (!PyArg_ParseTuple(args, "s", &amp;var1, ...))
+    return NULL;</code></pre>
+    <p><a target="_blank" href="http://docs.python.org/2/c-api/arg.html#PyArg_ParseTuple">http://docs.python.org/2/c-api/arg.html#PyArg_ParseTuple</a>
+</section>
+
+<section class="slide">
+    <h2>Helper Functions for Creating Python Objects</h2>
+    <p>On the way out or internally we can call Py_BuildValue
+<pre><code>
+PyObject* Py_BuildValue(const char *format, ...)
+</code></pre>
+    <p><a target="_blank" href="https://docs.python.org/2/c-api/arg.html#c.Py_BuildValue">https://docs.python.org/2/c-api/arg.html#c.Py_BuildValue</a>
+</section>
+
 <section class="slide">
     <h2>Exercise</h2>
-    <p>Try modifying the C code:
+    <p>Modify the C code paying special attention to the formatters used:</p>
+    <ol>
+        <li>Change "add" input and output values to floating point numbers. Check the format options for <a target="_blank" href="https://docs.python.org/2/c-api/arg.html#c.PyArg_ParseTuple">PyArg_ParseTuple</a>. Compile. Verify that your changes work
+        <li>Look at the last few "items" formatters for <a href="https://docs.python.org/2/c-api/arg.html#c.Py_BuildValue">Py_BuildValue</a>. Return the terms and the result one the addition operations as one of these types. For example, "add(2,3)" might return "(2,3,5)".
+    </ol>
+</section>
+
+<section class="slide">
+    <h2>More Examples with Sequence Types</h2>
+    <p>Let's look at /examples/week-08/c-api/whirlext/</p>
+    <p>The userfulness of <a href="https://docs.python.org/2/c-api/arg.html#c.Py_BuildValue">Py_BuildValue</a> should be apparent. If we ever want to interact with "Python-like" structures we can dynamically create them.
+    <p>These examples are from Ned Batchelder's old-but-still relevant <a href="http://nedbatchelder.com/text/whirlext.html">PyCon Talk</a></p>
+<pre><code>
+static PyMethodDef
+module_functions[] = {
+   { "string_peek", string_peek, METH_VARARGS, "Pick a character from a string." },
+   { "string_peek2", string_peek2, METH_VARARGS, "Safely pick a character from a string." },
+   { "insert_powers1", insert_powers1, METH_VARARGS, "Insert a tuple of powers-of-n at index n" },
+   { "insert_powers2", insert_powers2, METH_VARARGS, "Insert a tuple of powers-of-n at index n" },
+   { NULL }
+};
+</code></pre>
+</section>
+
+<section class="slide">
+    <h2>2 Minute Reference Counting Run Down</h2>
+    <p>There's a lot of nuances and exceptions of Owned versus Borrowed:</p>
     <ul>
-        <li>Change input and output values to floating point numbers (hint: check the format options for <a target="_blank" href="https://docs.python.org/2/c-api/arg.html#parsing-arguments-and-building-values">PyArg_ParseTuple</a>)
-        <li>verify that your changes to the C code are working properly in your Python code
+        <li>PyObject* is the ref to count
+        <li>If the C-API docs show a func returning a 'new' PyObject* ref, then you own it
+        <li>Py_XDECREF and returning from a PyObject* func will discard ownership
+        <li>But the exceptions to the rule are on a <a href="https://docs.python.org/2/extending/extending.html#ownership-rules">call-by-call basis</a>
     </ul>
 </section>
 
 <section class="slide">
+    <h2>Examples -- Memory Leaking</h2>
+    <p>Go look at /examples/week-08/c-api/memleak</p>
+    <ul>
+        <li>Take a look at <a href="https://docs.python.org/2/c-api/dict.html#c.PyDict_New">PyDict_New</a> signature
+    </ul>
+</section>
 
+<section class="slide">
+    <h2>Exercise</h2>
+    <p>Go to the dir /examples/week-08/c-api/whirlext/</p>
+    <ul>
+        <li>Run the memleak test ( it should be setup to run against "string_peek4" func )</li>
+        <p><code>python test_meamleak.py</code>
+        <li>Edit the memleak test to run against "string_peek3" func. Run it again</li>
+        <p><code>python test_meamleak.py</code>
+        <li>Where is the memory leak? Can you fix it?
+    </ul>
+</section>
+
+<section class="slide">
     <h2>Exception handling</h2>
     <p>Major errors in your C code won't magically turn into Python exceptions
     <p>You have to detect error conditions and call the proper functions
     <p>there is a global indicator (per thread) of the last error that occurred. Most functions don’t clear this on success, but will set it to indicate the cause of the error on failure.
     <p>Most functions also return an error indicator, usually NULL if they are supposed to return a pointer, or -1 if they return an integer (exception: the PyArg_*() functions return 1 for success and 0 for failure)
-    <p>The easy way to set this indicator is with PyErr_SetString
+    <p>The easy way to set this indicator is with <a href="https://docs.python.org/2/c-api/exceptions.html#c.PyErr_SetString">PyErr_SetString</a>
     <p><a target="_blank" href="http://docs.python.org/2/c-api/exceptions.html">http://docs.python.org/2/c-api/exceptions.html</a>
 </section>
 
 <section class="slide">
     <h2>Exercise</h2>
-    <p>Find the divide module in the examples/c-api directory
-    <p>What happens when you call divide.divide(1/0)?
-    <p>This is a different result than a pure Python 1/0, which throws an exception
-    <p>Change the divide method to throw an appropriate exception in the divide-by-zero case
-    <p>Hint: detect the error condition, call PyErr_SetString(PyExc_ZeroDivisionError, "DIVIDE BY ZERO ERROR"), and return NULL
-
+    <p>Find the divide module in the examples/week-08/c-api/divide/ directory
+    <ul>
+        <li>What happens when you call divide.divide(1/0)?
+        <li>This is a different result than a pure Python 1/0, which throws an exception
+        <li>Change the divide method to throw an appropriate exception in the divide-by-zero case using <a href="https://docs.python.org/2/c-api/exceptions.html#c.PyErr_SetString">PyErr_SetString</a> and the <a href="https://docs.python.org/2/c-api/exceptions.html#standard-exceptions">Standard Exception types</a>
+    </ul>
 </section>
 
 <section class="slide">
@@ -414,6 +507,7 @@ print point.x, point.y
 
 </section>
 
+<!--
 <section class="slide">
     <h2>ctypes exercise</h2>
     <p>
@@ -430,10 +524,11 @@ Take a look at what’s there, and how it works.
 <p>
 add another function, divide, to add.c, that accepts and returns floats
     <p>
-rebuild, and call it with ctypes<!--
+rebuild, and call it with ctypes
     <p>
-Try calling other system functions with ctypes. -->
+Try calling other system functions with ctypes.
 </section>
+-->
 
 <section class="slide">
     <h2>Cython</h2>
@@ -459,11 +554,6 @@ Try calling other system functions with ctypes. -->
     <h2>Developing with Cython</h2>
     <p>first, install cython with "pip install cython"</p>
     <p>Cython files end in the .pyx extension
-    <p>Cython functions can be declared two ways:
-        <ul>
-        <li>def foo  # callable from Python
-        <li>cdef foo  # only callable from Cython/C
-        </ul>
     <p>Once your .pyx file is created, it is converted to C via
 <pre><code>cython cy_add.pyx</code></pre>
     <p>Generate "annoted" C code in HTML
@@ -488,13 +578,38 @@ setup(name = "cython_example",
 <section class="slide">
     <h2>Adding types</h2>
 <code><pre>cdef int i
-def double dx
+cdef double dx
 </pre></code>
-<p>Now i and dx are statically typed. Do this for variables which are heavily used and profiling
-has shown you that they are expensive.
 <p>Typing everything in sight will not necessarily improve performance.  It may even harm it, as there may be unnecessary type checks or conversions
-
 </section>
+
+
+<section class="slide">
+    <h2>Cython functions</h2>
+    <p>Cython functions can be declared two ways:
+        <ul>
+            <li>def foo  # callable from Python
+            <li>cdef foo  # only callable from Cython/C
+        </ul>
+    </p>
+</section>
+
+<section class="slide">
+<h2>Calling external functions with Cython</h2>
+<p>You can tell Cython about external functions you want to call with 'cdef extern':
+<code><pre># distutils: sources = add.c
+# This tells cythonize that you need that c file.
+
+# telling cython what the function we want to call looks like.
+cdef extern from "add.h":
+    # pull in C add function, renaming to c_add for Cython
+    int c_add "add" (int x, int y)
+
+def add(x, y):
+    # now that cython knows about it -- we can just call it.
+    return c_add(x, y)</pre></code>
+</section>
+
 
 <section class="slide">
     <h2>Cython can compile pure Python code to C to provide a performance improvement</h2>
@@ -528,28 +643,9 @@ def integrate(f, a, b, N):
     <ul>
         <li>Convert the dynamically typed variables to static types and measure performance improvement before and after
         <li>Can static types and dynamic types be mixed?
-        <li>Check the performance in converting the function type to static (<a target="_blank" href="http://docs.cython.org/src/quickstart/cythonize.html#typing-functions">see here</a>)
+        <!--<li>Check the performance in converting the function type to static (<a target="_blank" href="http://docs.cython.org/src/quickstart/cythonize.html#typing-functions">see here</a>)-->
         <li>Use cython -a to compare the generated C code in all cases
     </ul>
-
-</section>
-
-<section class="slide">
-<h2>Calling external functions with Cython</h2>
-
-<p>You can tell Cython about external functions you want to call with 'cdef extern':
-<code><pre># distutils: sources = add.c
-# This tells cythonize that you need that c file.
-
-# telling cython what the function we want to call looks like.
-cdef extern from "add.h":
-    # pull in C add function, renaming to c_add for Cython
-    int c_add "add" (int x, int y)
-
-def add(x, y):
-    # now that cython knows about it -- we can just call it.
-    return c_add(x, y)</pre></code>
-
 
 </section>
 
